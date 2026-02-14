@@ -1,0 +1,91 @@
+# DPA Orphans Court Migration
+
+Automated migration of Delaware Public Archives Orphans Court case records from Access database exports into ArchivERA-ready import CSVs.
+
+## Overview
+
+Orphans Court records consist of adult (deceased parent) records linked to child records, each assigned to physical containers organized by alphabetical name ranges. This project provides a Python script that:
+
+1. Links parent records to child records by `Record_ID`
+2. Matches each record to the correct container (Barcode + Location ID) via alphabetical surname lookup
+3. Transforms everything into ArchivERA's 30-column import format
+4. Flags edge cases (foundlings, missing data) for manual review
+
+## Quick Start
+
+```bash
+python3 migrate.py \
+  --adults "NCC Adults.csv" \
+  --children "NCCChildren.csv" \
+  --containers "NCC Orphans Court Containers.csv" \
+  --output "output.csv" \
+  --default-rg 2840 \
+  --default-series 39 \
+  --default-dept-org "Orphans Court, New Castle County" \
+  --default-series-name "Case Files"
+```
+
+## Requirements
+
+- Python 3.6+
+- No external dependencies (stdlib only)
+
+## Input Files
+
+| File | Description |
+|------|-------------|
+| Adults CSV | Deceased parent records from Access database |
+| Children CSV | Child records linked by `Record_ID` |
+| Containers CSV | 431 containers with Barcode/Location, organized by alphabetical name ranges |
+
+## Output
+
+- **`output.csv`** — ArchivERA-ready import file (30 columns)
+- **`output_review.csv`** — Flagged records requiring manual review
+
+## CLI Arguments
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--adults` | `NCC Adults.csv` | Path to adults CSV |
+| `--children` | `NCCChildren.csv` | Path to children CSV |
+| `--containers` | `NCC Orphans Court Containers.csv` | Path to containers CSV |
+| `--output` | `output.csv` | Output file path |
+| `--default-rg` | (empty) | Fallback RG when source is empty (4-digit) |
+| `--default-series` | (empty) | Fallback Series when source is empty (3-digit) |
+| `--default-dept-org` | (empty) | Fallback Dept_Organization |
+| `--default-series-name` | (empty) | Fallback Series_Name |
+
+## Number Formatting
+
+- **RG**: 4 digits with leading zeros (e.g. `2840`, `0042`)
+- **SubGr / Series / SubSeries**: 3 digits with leading zeros (e.g. `039`, `000`)
+
+## Record Types
+
+| Type | Example | Title Source |
+|------|---------|-------------|
+| Deceased parent with children | Katie Bell (5 children) | Parent name |
+| Deceased parent, no children | George Bell | Parent name |
+| No parent, children listed | Emily Joan Agoos, Susan Julia Agoos | Children names joined with "and" |
+| Foundling | Sarah (no last name) | Child first name only |
+
+## Reference Files
+
+| File | Purpose |
+|------|---------|
+| `NCC Orphans Court - Edited.csv` | Gold standard — manually mapped ArchivERA import |
+| `NCC Orphans Court Combined.csv` | Intermediate combined parent-child records |
+| `NCC Orphans Court.csv` | Less cleaned-up parent-child version |
+| `CONTEXT.md` | Full project context and field mapping documentation |
+| `QUESTIONS.md` | Resolved decisions and open items |
+| `notes.md` | Original working notes (KC, NCC, SC counties) |
+
+## Counties
+
+The notes reference three counties with container counts:
+- **NCC** (New Castle County) — 431 containers (current dataset)
+- **KC** (Kent County) — 211 containers
+- **SC** (Sussex County) — 289 containers
+
+The script is designed to handle all three by adjusting input files and default CLI args per county.
