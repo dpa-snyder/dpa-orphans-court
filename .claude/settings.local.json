@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd NCC Orphans Court migration script and source data\n\nPython script \\(migrate.py\\) transforms Access database exports\n\\(Adults + Children + Containers CSVs\\) into ArchivERA-ready 30-column\nimport format. Handles deceased parents, foundlings, container matching\nvia alphabetical surname lookup, and zero-padded RG/Series fields.\n\nIncludes NCC source data, gold standard reference, and documentation.\nVerified against 5-record sample — all fields match except intentional\nimprovements \\(zero-padding\\) and expected manual-review flags \\(foundlings\\).\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git tag:*)"
+    ]
+  }
+}
