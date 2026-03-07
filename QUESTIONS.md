@@ -3,10 +3,10 @@
 ## Resolved Decisions
 
 1. **Foundlings** are a defined record category with their own Description field pattern:
-   - Description: foundling comment (e.g. "Foundling, parents unknown")
-   - Description.1: Deceased status
-   - Description.4: child comment
-   - Description.5: Number of sheets
+   - Description (col 1): foundling comment (e.g. "Foundling, parents unknown")
+   - Description (col 2): Deceased status
+   - Description (col 5): child comment
+   - Description (col 6): Number of sheets
 
 2. **Middle name formatting**: Full middle names preserved as-is (e.g. "Clay", "Joan"); single-letter initials get a period (e.g. "J" -> "J.").
 
@@ -14,9 +14,11 @@
 
 4. **Number padding**: RG = 4 digits with leading zeros. SubGr, Series, SubSeries = 3 digits with leading zeros.
 
-5. **Children in Description.3**: Only listed when Deceased=Yes. When Deceased=No and children appear in the Title, they are not repeated in Description.
+5. **Children in Description (single format)**: Only listed when Deceased=Yes. When Deceased=No and children appear in the Title, they are not repeated in Description.
 
-6. **"Children: none"**: Shown in Description.3 when Deceased=Yes but no children are linked.
+6. **"Children: none"**: Shown in the children-list Description column (single format) when Deceased=Yes but no children are linked.
+
+7. **Repeated header names**: AE reference files use duplicate `Description`/`Notes` header names (no numbering). Output headers should mirror that pattern.
 
 ## Open Items (revisit with larger dataset)
 

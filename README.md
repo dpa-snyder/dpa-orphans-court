@@ -8,7 +8,7 @@ Orphans Court records consist of adult (deceased parent) records linked to child
 
 1. Links parent records to child records by `Record_ID`
 2. Matches each record to the correct container (Barcode + Location ID) via alphabetical surname lookup
-3. Transforms everything into ArchivERA's 30-column import format
+3. Transforms everything into ArchivERA's import format using repeated `Description`/`Notes` headers (no numbering)
 4. Flags edge cases (foundlings, missing data) for manual review
 
 ## Quick Start
@@ -40,8 +40,15 @@ python3 migrate.py \
 
 ## Output
 
-- **`output.csv`** — ArchivERA-ready import file (30 columns)
+- **`output.csv`** — ArchivERA-ready import file (repeated `Description`/`Notes` headers, counts vary)
 - **`output_review.csv`** — Flagged records requiring manual review
+If `--children-format both` is used, two files are written:
+- `output_children_single.csv` (children as a numbered list in one Description field)
+- `output_children_columns.csv` (one child per Description column)
+Each output gets its own `_review.csv`.
+
+Both formats emit two `Notes` columns labeled `Notes` (no numbering). The first stores oversize/size info; the second stores metadata such as Deceased/DOD/Number of sheets (for `columns`) and container lookup notes.
+For `--children-format columns`, the output uses **repeated** `Description` headers (no numbering) with as many columns as needed for the maximum number of children in the dataset (minimum 6). Deceased/DOD/Number of sheets move to the second `Notes` column for that format.
 
 ## CLI Arguments
 
@@ -53,8 +60,14 @@ python3 migrate.py \
 | `--output` | `output.csv` | Output file path |
 | `--default-rg` | (empty) | Fallback RG when source is empty (4-digit) |
 | `--default-series` | (empty) | Fallback Series when source is empty (3-digit) |
+| `--default-subgr` | (empty) | Fallback SubGr when source is empty (3-digit) |
 | `--default-dept-org` | (empty) | Fallback Dept_Organization |
 | `--default-series-name` | (empty) | Fallback Series_Name |
+| `--children-format` | `single` | Children formatting: `single`, `columns`, or `both` |
+
+If any of `--default-rg`, `--default-series`, `--default-subgr`, `--default-dept-org`, or
+`--default-series-name` are omitted, the script auto-fills missing values from the most common
+non-empty value in the Adults CSV for those fields.
 
 ## Number Formatting
 
