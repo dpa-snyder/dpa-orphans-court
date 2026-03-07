@@ -1,7 +1,5 @@
 # Findings - SC
 
-Source: /Users/bag/code/dpa-orphans-court/counties/4840-sussex/findings.md
-
 ## Scope
 - Focused on Sussex only (Access Adults/Children + deleted folders and related tables).
 - Exports are raw CSV dumps from Access using `mdbtools` (no transformation).

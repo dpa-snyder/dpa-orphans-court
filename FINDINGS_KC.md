@@ -1,7 +1,5 @@
 # Findings - KC
 
-Source: /Users/bag/code/dpa-orphans-court/counties/3840-kent/findings.md
-
 ## Scope
 - Focused on KC only (Access Adults/Children + deleted folders).
 - Exports are raw CSV dumps from Access using `mdbtools` (no transformation).

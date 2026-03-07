@@ -1,7 +1,5 @@
 # Findings - NC
 
-Source: /Users/bag/code/dpa-orphans-court/counties/2840-new-castle/findings.md
-
 ## Scope
 - Focused on NCC only (Access Adults/Children + deleted folders).
 - Exports are raw CSV dumps from Access using `mdbtools` (no transformation).
