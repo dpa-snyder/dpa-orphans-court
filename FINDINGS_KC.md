@@ -65,6 +65,8 @@
 - Copy of Adults has 6,261 rows and 18 columns (missing `condition`, `DOD`, `Old code`, `Plot`).
 - Record IDs only in Adults: 18
 - Record IDs only in Copy of Adults: 28
+- Among shared IDs (6,233), 3,094 have at least one differing value.
+- Top differing columns: Deceased's Middle name (1,438), Barcode (932), Comments (870), Container Type (417).
 - Recommendation: treat `Adults` as the primary table unless you want a reconciliation step.
 
 ## Deleted folders analysis (value/usage)
@@ -98,8 +100,10 @@ Interpretation:
 
 ## Schema/mapping differences vs NCC
 - KC column names differ from NCC (e.g., `Record ID`, `Record Group Number`, `Series Number`, `Department Name`, `Deceased's Last name`).
-- Children table uses `Child's Last Name`, `Children's Record ID`, `Comments - Child`, etc.
-- For the migration script, we will need a KC-specific mapping or a renaming step before import.
+- Children table columns are shifted: `Parent's First Name` is numeric and ` etc` matches Adults last names ~90%. Mapping was corrected accordingly.
+- For the migration script, use the KC-specific mapping (not a simple rename) to avoid swapped fields.
 
 ## Notes
-- Container list is not present in the KC .mdb export; we need a separate container source for barcode/location lookups.
+- No KC container list found anywhere in the Access exports or local files. Location ID data is missing.
+- Barcode can come only from Adults (143 rows) or the oversize list (if we merge it later).
+- Output uses the parent/adult barcode when present; children inherit the parent barcode.

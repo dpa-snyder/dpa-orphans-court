@@ -68,7 +68,7 @@
 
 Implications:
 - RG/Series/Dept_Organization/Series_Name are not perfectly constant and include apparent typos.
-- If we auto-fill or normalize these fields, we should decide whether to keep outliers or fold them into the dominant values.
+- Decision: normalize these to dominant values (e.g., RG 4848 -> 4840, Series typos -> numeric series).
 
 ## Sparse columns (>=90% empty)
 - Adults sparse columns: Suffix (216 non-empty), Barcode (500), File_Num (580), Field1 (2).
@@ -108,4 +108,6 @@ Interpretation:
 - Confirm whether these are in scope for AE import or handled as separate collections.
 
 ## Notes
-- Container list is not present in the Sussex exports; we need a separate container source for barcode/location lookups.
+- No SC container list found anywhere in the Access exports or local files. Location ID data is missing.
+- Barcode can come only from Adults (500 rows) or the oversize list (if we merge it later).
+- Output uses the parent/adult barcode when present; children inherit the parent barcode.

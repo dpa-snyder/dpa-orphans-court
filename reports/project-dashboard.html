@@ -202,7 +202,7 @@
 <body>
 <header>
   <h1>Project Dashboard - dpa-orphans-court</h1>
-  <div class="sub">Generated 2026-03-06 22:57 · Local view</div>
+  <div class="sub">Generated 2026-03-07 17:42 · Local view</div>
 </header>
 <main>
   <div class="top">
@@ -293,7 +293,7 @@
 
   <div class="section">
     <details open>
-      <summary>README.md <span class="pill">2026-03-06 17:47</span></summary>
+      <summary>README.md <span class="pill">2026-03-07 16:13</span></summary>
       <pre># DPA Orphans Court Migration
 
 Automated migration of Delaware Public Archives Orphans Court case records from Access database exports into ArchivERA-ready import CSVs.
@@ -318,7 +318,8 @@ python3 migrate.py \
   --default-rg 2840 \
   --default-series 39 \
   --default-dept-org &quot;Orphans Court, New Castle County&quot; \
-  --default-series-name &quot;Case Files&quot;
+  --default-series-name &quot;Case Files&quot; \
+  --profile ncc
 ```
 
 ## Requirements
@@ -353,6 +354,7 @@ For `--children-format columns`, the output uses **repeated** `Description` head
 | `--adults` | `NCC Adults.csv` | Path to adults CSV |
 | `--children` | `NCCChildren.csv` | Path to children CSV |
 | `--containers` | `NCC Orphans Court Containers.csv` | Path to containers CSV |
+| `--no-containers` | (false) | Skip container lookup (barcode/location left blank unless present in source) |
 | `--output` | `output.csv` | Output file path |
 | `--default-rg` | (empty) | Fallback RG when source is empty (4-digit) |
 | `--default-series` | (empty) | Fallback Series when source is empty (3-digit) |
@@ -360,6 +362,7 @@ For `--children-format columns`, the output uses **repeated** `Description` head
 | `--default-dept-org` | (empty) | Fallback Dept_Organization |
 | `--default-series-name` | (empty) | Fallback Series_Name |
 | `--children-format` | `single` | Children formatting: `single`, `columns`, or `both` |
+| `--profile` | `ncc` | Column mapping profile: `ncc`, `kc`, or `sc` |
 
 If any of `--default-rg`, `--default-series`, `--default-subgr`, `--default-dept-org`, or
 `--default-series-name` are omitted, the script auto-fills missing values from the most common
@@ -401,9 +404,7 @@ The script is designed to handle all three by adjusting input files and default 
 </pre>
     </details>
 
-    <details><summary>FINDINGS_NC.md <span class="pill">2026-03-06 22:57</span></summary><pre># Findings - NC
-
-Source: /Users/bag/code/dpa-orphans-court/counties/2840-new-castle/findings.md
+    <details><summary>FINDINGS_NC.md <span class="pill">2026-03-07 16:43</span></summary><pre># Findings - NC
 
 ## Scope
 - Focused on NCC only (Access Adults/Children + deleted folders).
@@ -514,9 +515,7 @@ Header pattern observations:
 Implication for Orphans Court:
 - The NCC gold standard CSV uses numbered headers, but AE references use duplicate header names.
 - Orphans Court outputs should follow the AE examples: repeated `Description`/`Notes` headers with no numbering.
-</pre></details><details><summary>FINDINGS_KC.md <span class="pill">2026-03-06 22:57</span></summary><pre># Findings - KC
-
-Source: /Users/bag/code/dpa-orphans-court/counties/3840-kent/findings.md
+</pre></details><details><summary>FINDINGS_KC.md <span class="pill">2026-03-07 16:43</span></summary><pre># Findings - KC
 
 ## Scope
 - Focused on KC only (Access Adults/Children + deleted folders).
@@ -583,6 +582,8 @@ Source: /Users/bag/code/dpa-orphans-court/counties/3840-kent/findings.md
 - Copy of Adults has 6,261 rows and 18 columns (missing `condition`, `DOD`, `Old code`, `Plot`).
 - Record IDs only in Adults: 18
 - Record IDs only in Copy of Adults: 28
+- Among shared IDs (6,233), 3,094 have at least one differing value.
+- Top differing columns: Deceased&#x27;s Middle name (1,438), Barcode (932), Comments (870), Container Type (417).
 - Recommendation: treat `Adults` as the primary table unless you want a reconciliation step.
 
 ## Deleted folders analysis (value/usage)
@@ -605,19 +606,25 @@ Interpretation:
 - This looks like a curation log of deleted/merged folders with replacement labels and revised dates.
 - High match rate to Adults suggests it is useful as a QA/suppression list rather than an import source.
 
+## Oversize barcode list (all counties)
+- Source: access-dbs/All Counties Orphans Court Oversize.mdb (table: Oversize Orphan Court Names-Kent).
+- Rows: 1,378 (barcodes populated for all rows).
+- Name matches to KC Adults (last + first): 1,145.
+- No Location ID present; usable only for Barcode field on oversize records.
+
 ## Puzzle pieces (XLSX)
 - Sheet &quot;repair sheet&quot; lists potential folder matches, fixes, and rescan needs; likely internal QA notes rather than import data.
 
 ## Schema/mapping differences vs NCC
 - KC column names differ from NCC (e.g., `Record ID`, `Record Group Number`, `Series Number`, `Department Name`, `Deceased&#x27;s Last name`).
-- Children table uses `Child&#x27;s Last Name`, `Children&#x27;s Record ID`, `Comments - Child`, etc.
-- For the migration script, we will need a KC-specific mapping or a renaming step before import.
+- Children table columns are shifted: `Parent&#x27;s First Name` is numeric and ` etc` matches Adults last names ~90%. Mapping was corrected accordingly.
+- For the migration script, use the KC-specific mapping (not a simple rename) to avoid swapped fields.
 
 ## Notes
-- Container list is not present in the KC .mdb export; we need a separate container source for barcode/location lookups.
-</pre></details><details><summary>FINDINGS_SC.md <span class="pill">2026-03-06 22:57</span></summary><pre># Findings - SC
-
-Source: /Users/bag/code/dpa-orphans-court/counties/4840-sussex/findings.md
+- No KC container list found anywhere in the Access exports or local files. Location ID data is missing.
+- Barcode can come only from Adults (143 rows) or the oversize list (if we merge it later).
+- Output uses the parent/adult barcode when present; children inherit the parent barcode.
+</pre></details><details><summary>FINDINGS_SC.md <span class="pill">2026-03-07 16:43</span></summary><pre># Findings - SC
 
 ## Scope
 - Focused on Sussex only (Access Adults/Children + deleted folders and related tables).
@@ -687,7 +694,7 @@ Source: /Users/bag/code/dpa-orphans-court/counties/4840-sussex/findings.md
 
 Implications:
 - RG/Series/Dept_Organization/Series_Name are not perfectly constant and include apparent typos.
-- If we auto-fill or normalize these fields, we should decide whether to keep outliers or fold them into the dominant values.
+- Decision: normalize these to dominant values (e.g., RG 4848 -&gt; 4840, Series typos -&gt; numeric series).
 
 ## Sparse columns (&gt;=90% empty)
 - Adults sparse columns: Suffix (216 non-empty), Barcode (500), File_Num (580), Field1 (2).
@@ -713,6 +720,12 @@ Interpretation:
 - This appears to be a curation log of deleted/merged folders with replacement labels and revised dates.
 - It likely serves as a QA/suppression list rather than an import source.
 
+## Oversize barcode list (all counties)
+- Source: access-dbs/All Counties Orphans Court Oversize.mdb (table: Oversize Orphan Court Names-Sussex).
+- Rows: 2,351 (container barcodes populated for all rows).
+- Name matches to SC Adults (last + first): 1,975.
+- No Location ID present; usable only for Barcode field on oversize records.
+
 ## Paste Errors
 - One-row table that looks like an import or paste anomaly. Needs review if we want to reconcile it back into Adults/Children.
 
@@ -721,7 +734,9 @@ Interpretation:
 - Confirm whether these are in scope for AE import or handled as separate collections.
 
 ## Notes
-- Container list is not present in the Sussex exports; we need a separate container source for barcode/location lookups.
+- No SC container list found anywhere in the Access exports or local files. Location ID data is missing.
+- Barcode can come only from Adults (500 rows) or the oversize list (if we merge it later).
+- Output uses the parent/adult barcode when present; children inherit the parent barcode.
 </pre></details>
   </div>
 </main>
