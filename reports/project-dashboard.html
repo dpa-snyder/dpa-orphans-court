@@ -202,7 +202,7 @@
 <body>
 <header>
   <h1>Project Dashboard - dpa-orphans-court</h1>
-  <div class="sub">Generated 2026-03-06 22:49 · Local view</div>
+  <div class="sub">Generated 2026-03-06 22:57 · Local view</div>
 </header>
 <main>
   <div class="top">
@@ -211,21 +211,14 @@
         <h2>Status</h2>
         <div class="kpi">Open TODOs: <span id="kpi-open">19</span></div>
         <div class="muted">Completed: <span id="kpi-done">0</span></div>
-        <div class="muted">Drift report: delta (missing) · html (missing)</div>
         <div class="note">Checkboxes persist in this browser only.</div>
         <div class="note"><div class="ring" style="--pct: 0"><span>0%</span></div></div>
       </div>
       <div class="card">
         <h2>Quick Links</h2>
-        <div class="links"><a href="../README.md">README.md</a><a href="../FINDINGS.md">FINDINGS.md</a><a href="../ACTION_PLAN.md">ACTION_PLAN.md</a><a href="project-dashboard.html">project-dashboard.html</a></div>
+        <div class="links"><a href="../README.md">README.md</a><a href="../FINDINGS_NC.md">FINDINGS_NC.md</a><a href="../FINDINGS_KC.md">FINDINGS_KC.md</a><a href="../FINDINGS_SC.md">FINDINGS_SC.md</a><a href="../ACTION_PLAN.md">ACTION_PLAN.md</a><a href="project-dashboard.html">project-dashboard.html</a></div>
         <div class="muted" style="margin-top: 8px;">GitHub: <a href="https://github.com/dpa-snyder/dpa-orphans-court">https://github.com/dpa-snyder/dpa-orphans-court</a></div>
         <div class="muted">gh: logged in as snyderb-de</div>
-      </div>
-      <div class="card">
-        <h2>Drift Report</h2>
-        <div class="muted">Run locally, no Tailscale SSH involved.</div>
-        <div class="cmd">No drift command found</div>
-        <div class="muted">Outputs: <span class="muted">No drift report files</span></div>
       </div>
     </div>
 
@@ -408,13 +401,8 @@ The script is designed to handle all three by adjusting input files and default 
 </pre>
     </details>
 
-    <details>
-      <summary>FINDINGS.md <span class="pill">2026-03-06 22:40</span></summary>
-      <pre># Findings Summary
+    <details><summary>FINDINGS_NC.md <span class="pill">2026-03-06 22:57</span></summary><pre># Findings - NC
 
-Combined findings for all counties.
-
-## 2840 New Castle County
 Source: /Users/bag/code/dpa-orphans-court/counties/2840-new-castle/findings.md
 
 ## Scope
@@ -526,8 +514,8 @@ Header pattern observations:
 Implication for Orphans Court:
 - The NCC gold standard CSV uses numbered headers, but AE references use duplicate header names.
 - Orphans Court outputs should follow the AE examples: repeated `Description`/`Notes` headers with no numbering.
+</pre></details><details><summary>FINDINGS_KC.md <span class="pill">2026-03-06 22:57</span></summary><pre># Findings - KC
 
-## 3840 Kent County
 Source: /Users/bag/code/dpa-orphans-court/counties/3840-kent/findings.md
 
 ## Scope
@@ -627,8 +615,8 @@ Interpretation:
 
 ## Notes
 - Container list is not present in the KC .mdb export; we need a separate container source for barcode/location lookups.
+</pre></details><details><summary>FINDINGS_SC.md <span class="pill">2026-03-06 22:57</span></summary><pre># Findings - SC
 
-## 4840 Sussex County
 Source: /Users/bag/code/dpa-orphans-court/counties/4840-sussex/findings.md
 
 ## Scope
@@ -734,13 +722,7 @@ Interpretation:
 
 ## Notes
 - Container list is not present in the Sussex exports; we need a separate container source for barcode/location lookups.
-</pre>
-    </details>
-
-    <details>
-      <summary>dotfiles-audit-delta.md <span class="pill">missing</span></summary>
-      <pre>(missing reports/dotfiles-audit-delta.md)</pre>
-    </details>
+</pre></details>
   </div>
 </main>
 <script>
