@@ -22,7 +22,8 @@ python3 migrate.py \
   --default-rg 2840 \
   --default-series 39 \
   --default-dept-org "Orphans Court, New Castle County" \
-  --default-series-name "Case Files"
+  --default-series-name "Case Files" \
+  --profile ncc
 ```
 
 ## Requirements
@@ -57,6 +58,7 @@ For `--children-format columns`, the output uses **repeated** `Description` head
 | `--adults` | `NCC Adults.csv` | Path to adults CSV |
 | `--children` | `NCCChildren.csv` | Path to children CSV |
 | `--containers` | `NCC Orphans Court Containers.csv` | Path to containers CSV |
+| `--no-containers` | (false) | Skip container lookup (barcode/location left blank unless present in source) |
 | `--output` | `output.csv` | Output file path |
 | `--default-rg` | (empty) | Fallback RG when source is empty (4-digit) |
 | `--default-series` | (empty) | Fallback Series when source is empty (3-digit) |
@@ -64,6 +66,7 @@ For `--children-format columns`, the output uses **repeated** `Description` head
 | `--default-dept-org` | (empty) | Fallback Dept_Organization |
 | `--default-series-name` | (empty) | Fallback Series_Name |
 | `--children-format` | `single` | Children formatting: `single`, `columns`, or `both` |
+| `--profile` | `ncc` | Column mapping profile: `ncc`, `kc`, or `sc` |
 
 If any of `--default-rg`, `--default-series`, `--default-subgr`, `--default-dept-org`, or
 `--default-series-name` are omitted, the script auto-fills missing values from the most common

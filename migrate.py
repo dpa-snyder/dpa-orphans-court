@@ -23,7 +23,7 @@ from bisect import bisect_right
 # Column mapping config — edit these if source CSV column names differ
 # ---------------------------------------------------------------------------
 
-ADULT_COLUMNS = {
+ADULT_COLUMNS_NCC = {
     "record_id": "Record_ID",
     "rg": "RG",
     "subgr": "SubGr",
@@ -43,9 +43,10 @@ ADULT_COLUMNS = {
     "oversized": "Oversized",
     "container_type": "Container_Type",
     "size_of_container": "size_of_container",
+    "barcode": "Barcode",
 }
 
-CHILD_COLUMNS = {
+CHILD_COLUMNS_NCC = {
     "record_id": "Record_ID",
     "last_name": "Last_Name",
     "first_name": "First_Name",
@@ -57,11 +58,87 @@ CHILD_COLUMNS = {
     "comments": "Comments",
 }
 
+ADULT_COLUMNS_KC = {
+    "record_id": "Record ID",
+    "rg": "Record Group Number",
+    "subgr": "",
+    "series": "Series Number",
+    "dept_org": "Department Name",
+    "series_name": "Series Name",
+    "last_name": "Deceased's Last name",
+    "first_name": "Deceased's First name",
+    "middle_name": "Deceased's Middle name",
+    "deceased": "Deceased",
+    "suffix": "Title: \"Jr\"",
+    "begin_year": "Beginning Date",
+    "end_year": "Ending Date",
+    "num_sheets": "Document Number",
+    "comments": "Comments",
+    "dod": "DOD",
+    "oversized": "Oversized",
+    "container_type": "Container Type",
+    "size_of_container": "",
+    "barcode": "Barcode",
+}
+
+CHILD_COLUMNS_KC = {
+    "record_id": "Record ID",
+    "last_name": "Child's Last Name",
+    "first_name": "Child's First Name",
+    "middle_name": "Child's Middle Name",
+    "suffix": "Jr",
+    # KC child export shifts parent/child columns; mapping corrected via analysis.
+    "parent_last": " etc",
+    "parent_first": "Parent's Last Name",
+    "child_record_id": "Parent's First Name",
+    "comments": "Children's Record ID",
+}
+
+ADULT_COLUMNS_SC = {
+    "record_id": "Record_ID",
+    "rg": "RG",
+    "subgr": "SubGr",
+    "series": "Series",
+    "dept_org": "Dept_Organization",
+    "series_name": "Series_Name",
+    "last_name": "Parent_Last_Name",
+    "first_name": "Parent_First_Name",
+    "middle_name": "Parent_Middle_Name",
+    "deceased": "Deceased",
+    "suffix": "Suffix",
+    "begin_year": "Begin_year",
+    "end_year": "End_Year",
+    "num_sheets": "Number_of_Sheets",
+    "comments": "Comments",
+    "dod": "DOD",
+    "oversized": "Oversized",
+    "container_type": "Container_Type",
+    "size_of_container": "Size_of_Container",
+    "barcode": "Barcode",
+}
+
+CHILD_COLUMNS_SC = {
+    "record_id": "Record_ID",
+    "last_name": "Last_Name",
+    "first_name": "First_Name",
+    "middle_name": "MiddleName",
+    "suffix": "Suffix",
+    "parent_last": "Parent_Last_Name",
+    "parent_first": "Parent_First_Name",
+    "child_record_id": "Childrens_Record_ID",
+    "comments": "Comments",
+}
+
+ADULT_COLUMNS = ADULT_COLUMNS_NCC
+CHILD_COLUMNS = CHILD_COLUMNS_NCC
+
 CONTAINER_COLUMNS = {
     "title": "Title",
     "barcode": "Barcode",
     "location_id": "Location ID",
 }
+
+PROFILE = "ncc"
 
 # ArchivERA output header parts. Description/Notes are repeated (no numbering).
 HEADER_PREFIX = [
@@ -147,6 +224,45 @@ def pad_series(val):
         return str(int(val)).zfill(3)
     except ValueError:
         return val
+
+
+def normalize_sc_rg(val):
+    if not val:
+        return val
+    val = val.strip()
+    return "4840" if val == "4848" else val
+
+
+def normalize_sc_series(val):
+    if not val:
+        return val
+    v = val.strip()
+    v = v.replace("O", "0").replace("o", "0").replace("'", "")
+    digits = re.sub(r"[^0-9]", "", v)
+    if not digits:
+        return val
+    return pad_series(digits)
+
+
+def normalize_sc_dept_org(val):
+    if not val:
+        return val
+    v = val.strip()
+    mapping = {
+        "orphans court": "Orphans Court, Sussex County",
+        "case files": "Orphans Court, Sussex County",
+    }
+    return mapping.get(v.lower(), v)
+
+
+def normalize_sc_series_name(val):
+    if not val:
+        return val
+    v = val.strip()
+    mapping = {
+        "case file": "Case Files",
+    }
+    return mapping.get(v.lower(), v)
 
 
 def format_middle(middle):
@@ -476,6 +592,7 @@ def build_record(adult_row, children_list, container_lookup, defaults=None, chil
     end_year = clean_float_str(get(adult_row, ADULT_COLUMNS, "end_year"))
     oversized = get(adult_row, ADULT_COLUMNS, "oversized")
     size_of_container = get(adult_row, ADULT_COLUMNS, "size_of_container")
+    adult_barcode = get(adult_row, ADULT_COLUMNS, "barcode")
 
     # RG: 4-digit padded; Series/SubGr: 3-digit padded
     rg = pad_rg(get(adult_row, ADULT_COLUMNS, "rg") or defaults.get("rg", ""))
@@ -483,6 +600,12 @@ def build_record(adult_row, children_list, container_lookup, defaults=None, chil
     subgr = pad_series(get(adult_row, ADULT_COLUMNS, "subgr") or defaults.get("subgr", "0"))
     dept_org = get(adult_row, ADULT_COLUMNS, "dept_org") or defaults.get("dept_org", "")
     series_name = get(adult_row, ADULT_COLUMNS, "series_name") or defaults.get("series_name", "")
+
+    if PROFILE == "sc":
+        rg = normalize_sc_rg(rg)
+        series = normalize_sc_series(series)
+        dept_org = normalize_sc_dept_org(dept_org)
+        series_name = normalize_sc_series_name(series_name)
 
     # Title
     title = build_title(adult_row, children_list)
@@ -512,27 +635,35 @@ def build_record(adult_row, children_list, container_lookup, defaults=None, chil
     if notes_size:
         notes_primary = f"{notes_primary} | {notes_size}" if notes_primary else notes_size
 
-    # Container lookup
-    lookup_last = last_name
-    lookup_first = first_name
-    if not lookup_last and children_list:
-        # Use first child's last name for container lookup
-        for child in children_list:
-            if child["last_name"]:
-                lookup_last = child["last_name"]
-                lookup_first = child["first_name"]
-                break
-
+    # Container lookup (optional)
     container_note = ""
-    if lookup_last:
-        barcode, location = container_lookup.find(lookup_last, lookup_first)
-    else:
-        barcode, location = None, None
-        flags.append(f"Record {rid}: No last name available for container lookup")
-        container_note = "Container lookup: no last name"
+    barcode = ""
+    location = ""
+    if container_lookup:
+        lookup_last = last_name
+        lookup_first = first_name
+        if not lookup_last and children_list:
+            # Use first child's last name for container lookup
+            for child in children_list:
+                if child["last_name"]:
+                    lookup_last = child["last_name"]
+                    lookup_first = child["first_name"]
+                    break
 
-    if barcode is None and lookup_last:
-        flags.append(f"Record {rid}: No container match for '{lookup_last}'")
+        if lookup_last:
+            barcode, location = container_lookup.find(lookup_last, lookup_first)
+        else:
+            barcode, location = None, None
+            flags.append(f"Record {rid}: No last name available for container lookup")
+            container_note = "Container lookup: no last name"
+
+        if barcode is None and lookup_last:
+            flags.append(f"Record {rid}: No container match for '{lookup_last}'")
+
+        if not barcode and adult_barcode:
+            barcode = adult_barcode
+    else:
+        barcode = adult_barcode
 
     if container_note:
         if notes_extra:
@@ -591,6 +722,10 @@ def main():
         help="Path to containers CSV (default: NCC Orphans Court Containers.csv)"
     )
     parser.add_argument(
+        "--no-containers", action="store_true",
+        help="Skip container lookup even if a containers CSV is provided"
+    )
+    parser.add_argument(
         "--output", default="output.csv",
         help="Path for output CSV (default: output.csv)"
     )
@@ -619,20 +754,45 @@ def main():
         choices=["single", "columns", "both"],
         help="Children formatting: single (newline list), columns (one per Description column), both"
     )
+    parser.add_argument(
+        "--profile", default="ncc",
+        choices=["ncc", "kc", "sc"],
+        help="Column mapping profile: ncc, kc, or sc"
+    )
 
     args = parser.parse_args()
 
     # Validate input files exist
-    for path, label in [(args.adults, "Adults"), (args.children, "Children"),
-                        (args.containers, "Containers")]:
+    for path, label in [(args.adults, "Adults"), (args.children, "Children")]:
         if not os.path.exists(path):
             print(f"Error: {label} file not found: {path}", file=sys.stderr)
             sys.exit(1)
+    if not args.no_containers:
+        if not os.path.exists(args.containers):
+            print(f"Error: Containers file not found: {args.containers}", file=sys.stderr)
+            sys.exit(1)
+
+    # Set profile-specific column mappings
+    global ADULT_COLUMNS, CHILD_COLUMNS, PROFILE
+    PROFILE = args.profile
+    if PROFILE == "kc":
+        ADULT_COLUMNS = ADULT_COLUMNS_KC
+        CHILD_COLUMNS = CHILD_COLUMNS_KC
+    elif PROFILE == "sc":
+        ADULT_COLUMNS = ADULT_COLUMNS_SC
+        CHILD_COLUMNS = CHILD_COLUMNS_SC
+    else:
+        ADULT_COLUMNS = ADULT_COLUMNS_NCC
+        CHILD_COLUMNS = CHILD_COLUMNS_NCC
 
     # Load data
-    print(f"Loading containers from: {args.containers}")
-    container_lookup = ContainerLookup(args.containers)
-    print(f"  {len(container_lookup.entries)} containers loaded")
+    container_lookup = None
+    if args.no_containers:
+        print("Skipping container lookup (no containers)")
+    else:
+        print(f"Loading containers from: {args.containers}")
+        container_lookup = ContainerLookup(args.containers)
+        print(f"  {len(container_lookup.entries)} containers loaded")
 
     print(f"Loading children from: {args.children}")
     children_index = load_children(args.children)

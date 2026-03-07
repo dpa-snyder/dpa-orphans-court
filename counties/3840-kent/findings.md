@@ -87,6 +87,12 @@ Interpretation:
 - This looks like a curation log of deleted/merged folders with replacement labels and revised dates.
 - High match rate to Adults suggests it is useful as a QA/suppression list rather than an import source.
 
+## Oversize barcode list (all counties)
+- Source: access-dbs/All Counties Orphans Court Oversize.mdb (table: Oversize Orphan Court Names-Kent).
+- Rows: 1,378 (barcodes populated for all rows).
+- Name matches to KC Adults (last + first): 1,145.
+- No Location ID present; usable only for Barcode field on oversize records.
+
 ## Puzzle pieces (XLSX)
 - Sheet "repair sheet" lists potential folder matches, fixes, and rescan needs; likely internal QA notes rather than import data.
 

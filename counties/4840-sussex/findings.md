@@ -94,6 +94,12 @@ Interpretation:
 - This appears to be a curation log of deleted/merged folders with replacement labels and revised dates.
 - It likely serves as a QA/suppression list rather than an import source.
 
+## Oversize barcode list (all counties)
+- Source: access-dbs/All Counties Orphans Court Oversize.mdb (table: Oversize Orphan Court Names-Sussex).
+- Rows: 2,351 (container barcodes populated for all rows).
+- Name matches to SC Adults (last + first): 1,975.
+- No Location ID present; usable only for Barcode field on oversize records.
+
 ## Paste Errors
 - One-row table that looks like an import or paste anomaly. Needs review if we want to reconcile it back into Adults/Children.
 
