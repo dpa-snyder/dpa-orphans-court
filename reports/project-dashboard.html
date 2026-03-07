@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Project Dashboard</title>
+<title>Project Dashboard - dpa-orphans-court</title>
 <style>
   :root {
     --bg: #0b0f14;
@@ -156,6 +156,31 @@
     border: 1px solid #1b2638;
   }
   .ring span { color: var(--text); font-weight: 600; }
+  .phase-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .phase-chart {
+    background: #0b1220;
+    border: 1px solid #1b2638;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    display: grid;
+    gap: 6px;
+  }
+  .ring-sm {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: conic-gradient(#34d399 0 calc(var(--pct) * 1%), #1f2937 calc(var(--pct) * 1%) 100%);
+    display: grid; place-items: center; font-size: 10px; color: var(--muted);
+    border: 1px solid #1b2638;
+    margin: 0 auto;
+  }
+  .ring-sm span { color: var(--text); font-weight: 600; }
+  .phase-chart-label { font-size: 11px; color: var(--muted); }
+  .phase-chart-num { font-size: 11px; color: var(--text); }
   .filter-bar {
     display: flex;
     gap: 8px;
@@ -176,15 +201,15 @@
 </head>
 <body>
 <header>
-  <h1>Project Dashboard</h1>
-  <div class="sub">Generated 2026-03-06 22:40 · Local view</div>
+  <h1>Project Dashboard - dpa-orphans-court</h1>
+  <div class="sub">Generated 2026-03-06 22:49 · Local view</div>
 </header>
 <main>
   <div class="top">
     <div class="left-stack">
       <div class="card">
         <h2>Status</h2>
-        <div class="kpi">Open TODOs: <span id="kpi-open">0</span></div>
+        <div class="kpi">Open TODOs: <span id="kpi-open">19</span></div>
         <div class="muted">Completed: <span id="kpi-done">0</span></div>
         <div class="muted">Drift report: delta (missing) · html (missing)</div>
         <div class="note">Checkboxes persist in this browser only.</div>
@@ -192,7 +217,7 @@
       </div>
       <div class="card">
         <h2>Quick Links</h2>
-        <div class="links"><a href="../README.md">README.md</a><a href="../FINDINGS.md">FINDINGS.md</a><a href="project-dashboard.html">project-dashboard.html</a></div>
+        <div class="links"><a href="../README.md">README.md</a><a href="../FINDINGS.md">FINDINGS.md</a><a href="../ACTION_PLAN.md">ACTION_PLAN.md</a><a href="project-dashboard.html">project-dashboard.html</a></div>
         <div class="muted" style="margin-top: 8px;">GitHub: <a href="https://github.com/dpa-snyder/dpa-orphans-court">https://github.com/dpa-snyder/dpa-orphans-court</a></div>
         <div class="muted">gh: logged in as snyderb-de</div>
       </div>
@@ -206,7 +231,11 @@
 
     <div class="card">
       <h2>Progress</h2>
-      <div class="bars"></div>
+      <div class="bars"><div class="bar" data-phase="phase-1-scope-and-decisions"><div class="bar-label">Phase 1: Scope and Decisions</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/4 done</div></div><div class="bar" data-phase="phase-2-schema-and-mapping"><div class="bar-label">Phase 2: Schema and Mapping</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/4 done</div></div><div class="bar" data-phase="phase-3-extraction-qa"><div class="bar-label">Phase 3: Extraction QA</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/3 done</div></div><div class="bar" data-phase="phase-4-generate-ae-outputs"><div class="bar-label">Phase 4: Generate AE Outputs</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/3 done</div></div><div class="bar" data-phase="phase-5-review-and-cleanup"><div class="bar-label">Phase 5: Review and Cleanup</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/3 done</div></div><div class="bar" data-phase="phase-6-handoff"><div class="bar-label">Phase 6: Handoff</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/2 done</div></div></div>
+      <div class="phase-charts">
+        
+        <div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 1: Scope and Decisions</div><div class="phase-chart-num">0/4 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 2: Schema and Mapping</div><div class="phase-chart-num">0/4 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 3: Extraction QA</div><div class="phase-chart-num">0/3 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 4: Generate AE Outputs</div><div class="phase-chart-num">0/3 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 5: Review and Cleanup</div><div class="phase-chart-num">0/3 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 6: Handoff</div><div class="phase-chart-num">0/2 done</div></div>
+      </div>
     </div>
   </div>
 
@@ -225,7 +254,7 @@
       <ul class="urgent-block" id="urgent-list"></ul>
 
       <h2>Todos By Phase</h2>
-      
+      <div class="phase" data-phase="phase-1-scope-and-decisions"><div class="phase-header">Phase 1: Scope and Decisions <span class="pill" data-phase-count>4/4</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="1a2fc79913ea" id="todo-1a2fc79913ea-0" ><label class="todo-label" for="todo-1a2fc79913ea-0">Confirm how to use deleted folders tables for NCC, KC, and SC (suppress, rename, or QA only).</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="b6fba9e7e7de" id="todo-b6fba9e7e7de-1" ><label class="todo-label" for="todo-b6fba9e7e7de-1">Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="a6ce0ce07b71" id="todo-a6ce0ce07b71-2" ><label class="todo-label" for="todo-a6ce0ce07b71-2">Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="5d267a71f748" id="todo-5d267a71f748-3" ><label class="todo-label" for="todo-5d267a71f748-3">Identify container list sources for KC and SC (barcode/location lookup files).</label></li></ul></div><div class="phase" data-phase="phase-2-schema-and-mapping"><div class="phase-header">Phase 2: Schema and Mapping <span class="pill" data-phase-count>4/4</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="449fe0b316b3" id="todo-449fe0b316b3-0" ><label class="todo-label" for="todo-449fe0b316b3-0">Define KC-specific column mapping (or a pre-rename step) to match the NCC schema.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="0c88a910c5f3" id="todo-0c88a910c5f3-1" ><label class="todo-label" for="todo-0c88a910c5f3-1">Decide SubGr defaults for KC and SC (likely `000`).</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="5a0b375e54e8" id="todo-5a0b375e54e8-2" ><label class="todo-label" for="todo-5a0b375e54e8-2">Decide how to normalize SC RG/Series/Dept_Organization/Series_Name outliers (keep vs fold into dominant values).</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="6d48b6f09a26" id="todo-6d48b6f09a26-3" ><label class="todo-label" for="todo-6d48b6f09a26-3">Confirm Notes column policy (two `Notes` columns) and what goes in each for all counties.</label></li></ul></div><div class="phase" data-phase="phase-3-extraction-qa"><div class="phase-header">Phase 3: Extraction QA <span class="pill" data-phase-count>3/3</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="51a0a3b29dae" id="todo-51a0a3b29dae-0" ><label class="todo-label" for="todo-51a0a3b29dae-0">Verify all Access tables are exported for KC and SC (Adults/Children + supplemental tables).</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="e0c302a4c441" id="todo-e0c302a4c441-1" ><label class="todo-label" for="todo-e0c302a4c441-1">Validate leading-zero handling for RG/Series/SubGr and decide if padding should be enforced at export or in script.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="b677692ffa32" id="todo-b677692ffa32-2" ><label class="todo-label" for="todo-b677692ffa32-2">Compare extracted row counts against Access to ensure completeness.</label></li></ul></div><div class="phase" data-phase="phase-4-generate-ae-outputs"><div class="phase-header">Phase 4: Generate AE Outputs <span class="pill" data-phase-count>3/3</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="27b2ed488338" id="todo-27b2ed488338-0" ><label class="todo-label" for="todo-27b2ed488338-0">Run NCC exports with current script and defaults; produce both `single` and `columns` outputs.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="41c2126f0299" id="todo-41c2126f0299-1" ><label class="todo-label" for="todo-41c2126f0299-1">Implement KC mapping and generate KC outputs once decisions are finalized.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="6e730211ac54" id="todo-6e730211ac54-2" ><label class="todo-label" for="todo-6e730211ac54-2">Implement SC normalization rules and generate SC outputs.</label></li></ul></div><div class="phase" data-phase="phase-5-review-and-cleanup"><div class="phase-header">Phase 5: Review and Cleanup <span class="pill" data-phase-count>3/3</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="4b35df629bd8" id="todo-4b35df629bd8-0" ><label class="todo-label" for="todo-4b35df629bd8-0">Review `_review.csv` flags and resolve container-matching and missing-name cases.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="bef36b60c0e8" id="todo-bef36b60c0e8-1" ><label class="todo-label" for="todo-bef36b60c0e8-1">Apply deleted folder suppression/rename rules where approved.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="231f81e4f274" id="todo-231f81e4f274-2" ><label class="todo-label" for="todo-231f81e4f274-2">Confirm Description column counts cover maximum children per county.</label></li></ul></div><div class="phase" data-phase="phase-6-handoff"><div class="phase-header">Phase 6: Handoff <span class="pill" data-phase-count>2/2</span></div><ul><li class="todo-item urgent-item"><input class="todo" type="checkbox" data-key="258c441ceb2d" id="todo-258c441ceb2d-0" ><label class="todo-label" for="todo-258c441ceb2d-0">⚠️ Validate an AE import using the final output schema.</label></li><li class="todo-item urgent-item"><input class="todo" type="checkbox" data-key="5142fcd834d7" id="todo-5142fcd834d7-1" ><label class="todo-label" for="todo-5142fcd834d7-1">⚠️ Deliver final CSVs plus findings/report for each county.</label></li></ul></div>
 
       
       
@@ -233,7 +262,39 @@
 
     <section class="card">
       <h2>Action Plan</h2>
-      <pre>(missing ACTION_PLAN.md)</pre>
+      <pre># Action Plan
+
+## Phase 1: Scope and Decisions
+- [ ] Confirm how to use deleted folders tables for NCC, KC, and SC (suppress, rename, or QA only).
+- [ ] Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.
+- [ ] Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`.
+- [ ] Identify container list sources for KC and SC (barcode/location lookup files).
+
+## Phase 2: Schema and Mapping
+- [ ] Define KC-specific column mapping (or a pre-rename step) to match the NCC schema.
+- [ ] Decide SubGr defaults for KC and SC (likely `000`).
+- [ ] Decide how to normalize SC RG/Series/Dept_Organization/Series_Name outliers (keep vs fold into dominant values).
+- [ ] Confirm Notes column policy (two `Notes` columns) and what goes in each for all counties.
+
+## Phase 3: Extraction QA
+- [ ] Verify all Access tables are exported for KC and SC (Adults/Children + supplemental tables).
+- [ ] Validate leading-zero handling for RG/Series/SubGr and decide if padding should be enforced at export or in script.
+- [ ] Compare extracted row counts against Access to ensure completeness.
+
+## Phase 4: Generate AE Outputs
+- [ ] Run NCC exports with current script and defaults; produce both `single` and `columns` outputs.
+- [ ] Implement KC mapping and generate KC outputs once decisions are finalized.
+- [ ] Implement SC normalization rules and generate SC outputs.
+
+## Phase 5: Review and Cleanup
+- [ ] Review `_review.csv` flags and resolve container-matching and missing-name cases.
+- [ ] Apply deleted folder suppression/rename rules where approved.
+- [ ] Confirm Description column counts cover maximum children per county.
+
+## Phase 6: Handoff
+- [ ] Validate an AE import using the final output schema.
+- [ ] Deliver final CSVs plus findings/report for each county.
+</pre>
     </section>
   </div>
 
