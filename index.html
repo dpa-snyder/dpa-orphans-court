@@ -446,7 +446,7 @@
     <div class="header-top">
       <div>
         <h1>📋 DPA Orphans Court -> AE: Migration Dashboard</h1>
-        <p class="header-sub">Brighter view + issue-backed todos + live repo telemetry</p>
+        <p id="header-sub" class="header-sub">Loading action plan summary...</p>
       </div>
       <div class="header-tools">
         <span class="pill" id="updated-pill">Updated: loading...</span>
@@ -664,6 +664,20 @@
       document.getElementById("theme-toggle").textContent = theme === "dark" ? "☀️" : "🌙";
     }
 
+    async function initActionPlanSummary() {
+      const sub = document.getElementById("header-sub");
+      const fallback = "Brighter view + issue-backed todos + live repo telemetry";
+      try {
+        const resp = await fetch("ACTION_PLAN.md", { cache: "no-store" });
+        if (!resp.ok) throw new Error(`ACTION_PLAN.md ${resp.status}`);
+        const text = await resp.text();
+        const line = text.split(/\r?\n/).find((l) => /^Summary:\s*/i.test(l.trim()));
+        sub.textContent = line ? line.replace(/^Summary:\s*/i, "").trim() : fallback;
+      } catch (_err) {
+        sub.textContent = fallback;
+      }
+    }
+
     async function initDocReader() {
       const docs = [
         "README.md",
@@ -715,6 +729,7 @@
 
     async function main() {
       initTheme();
+      initActionPlanSummary();
       initDocReader();
       document.getElementById("theme-toggle").addEventListener("click", () => {
         const current = document.body.getAttribute("data-theme") || "light";

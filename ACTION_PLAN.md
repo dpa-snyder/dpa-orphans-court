@@ -1,5 +1,7 @@
 # Action Plan
 
+Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs using repeated Description/Notes headers, with county-specific mapping, QA, and final import validation.
+
 ## Phase 1: Scope and Decisions
 - [x] Ignore NCC deleted folders CSV (do not use in output generation).
 - [ ] Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.
