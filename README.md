@@ -43,6 +43,7 @@ python3 migrate.py \
 
 - **`output.csv`** — ArchivERA-ready import file (repeated `Description`/`Notes` headers, counts vary)
 - **`output_review.csv`** — Flagged records requiring manual review
+Default output format is `columns` (repeated `Description`/`Notes` headers, no numbering).
 If `--children-format both` is used, two files are written:
 - `output_children_single.csv` (children as a numbered list in one Description field)
 - `output_children_columns.csv` (one child per Description column)
@@ -65,7 +66,7 @@ For `--children-format columns`, the output uses **repeated** `Description` head
 | `--default-subgr` | (empty) | Fallback SubGr when source is empty (3-digit) |
 | `--default-dept-org` | (empty) | Fallback Dept_Organization |
 | `--default-series-name` | (empty) | Fallback Series_Name |
-| `--children-format` | `single` | Children formatting: `single`, `columns`, or `both` |
+| `--children-format` | `columns` | Children formatting: `columns`, `single`, or `both` |
 | `--profile` | `ncc` | Column mapping profile: `ncc`, `kc`, or `sc` |
 
 If any of `--default-rg`, `--default-series`, `--default-subgr`, `--default-dept-org`, or

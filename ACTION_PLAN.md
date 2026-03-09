@@ -1,7 +1,7 @@
 # Action Plan
 
 ## Phase 1: Scope and Decisions
-- [ ] Confirm how to use deleted folders tables for NCC, KC, and SC (suppress, rename, or QA only).
+- [x] Ignore NCC deleted folders CSV (do not use in output generation).
 - [ ] Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.
 - [ ] Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`.
 - [ ] Identify container list sources for KC and SC (barcode/location lookup files).
@@ -18,7 +18,7 @@
 - [ ] Compare extracted row counts against Access to ensure completeness.
 
 ## Phase 4: Generate AE Outputs
-- [ ] Run NCC exports with current script and defaults; produce both `single` and `columns` outputs.
+- [ ] Run NCC exports with current script and defaults; produce `columns` output (repeated headers).
 - [ ] Implement KC mapping and generate KC outputs once decisions are finalized.
 - [ ] Implement SC normalization rules and generate SC outputs.
 

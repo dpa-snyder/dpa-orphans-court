@@ -750,9 +750,9 @@ def main():
         help="Default SubGr value when source is empty (3-digit, e.g. 000)"
     )
     parser.add_argument(
-        "--children-format", default="single",
+        "--children-format", default="columns",
         choices=["single", "columns", "both"],
-        help="Children formatting: single (newline list), columns (one per Description column), both"
+        help="Children formatting: columns (one per Description column), single (newline list), both"
     )
     parser.add_argument(
         "--profile", default="ncc",
