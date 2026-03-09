@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Action Plan - dpa-orphans-court</title>
+  <title>DPA Orphans Court -> AE: Migration Dashboard</title>
   <style>
     :root {
       --bg: #f4f2ee;
@@ -161,10 +161,45 @@
       letter-spacing: 0.08em;
       opacity: 0.87;
     }
+    .header-card,
+    .header-card a {
+      color: #eef5ff;
+    }
+    .header-card a:hover {
+      color: #ffffff;
+    }
     .chip-row {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 6px;
+      vertical-align: middle;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+    .lang-bar {
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.18);
+      display: flex;
+      margin-bottom: 8px;
+    }
+    .lang-seg {
+      height: 100%;
+      display: block;
+    }
+    .lang-empty {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      opacity: 0.9;
     }
     .chip {
       display: inline-block;
@@ -410,7 +445,7 @@
   <header class="header">
     <div class="header-top">
       <div>
-        <h1>📋 dpa-orphans-court - Action Dashboard</h1>
+        <h1>📋 DPA Orphans Court -> AE: Migration Dashboard</h1>
         <p class="header-sub">Brighter view + issue-backed todos + live repo telemetry</p>
       </div>
       <div class="header-tools">
@@ -430,6 +465,7 @@
     <div class="header-grid">
       <section class="header-card">
         <h3>🧬 Language Breakdown</h3>
+        <div id="lang-bar" class="lang-bar"><span class="lang-empty">Loading...</span></div>
         <div id="lang-breakdown" class="chip-row"><span class="chip">Loading...</span></div>
       </section>
       <section class="header-card">
@@ -544,6 +580,23 @@
     function fmtDate(iso) {
       const d = new Date(iso);
       return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    }
+
+    function languageColor(name) {
+      const preset = {
+        JavaScript: "#f1e05a",
+        TypeScript: "#3178c6",
+        Python: "#3572A5",
+        HTML: "#e34c26",
+        CSS: "#563d7c",
+        Shell: "#89e051",
+        Markdown: "#083fa1"
+      };
+      if (preset[name]) return preset[name];
+      let hash = 0;
+      for (let i = 0; i < name.length; i += 1) hash = ((hash << 5) - hash) + name.charCodeAt(i);
+      const hue = Math.abs(hash) % 360;
+      return `hsl(${hue}, 65%, 52%)`;
     }
 
     function newIssueUrl(title) {
@@ -732,15 +785,23 @@
         document.getElementById("open-issues").innerHTML = openIssueHtml || '<p class="muted">No open issues.</p>';
 
         const totalLangBytes = Object.values(languages).reduce((sum, n) => sum + n, 0) || 1;
-        const langHtml = Object.entries(languages)
+        const langEntries = Object.entries(languages)
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 6)
+          .slice(0, 6);
+        const langBarHtml = langEntries
           .map(([name, bytes]) => {
-            const pctLang = Math.round((bytes / totalLangBytes) * 100);
-            return `<span class="chip">${esc(name)} ${pctLang}%</span>`;
+            const pctRaw = (bytes / totalLangBytes) * 100;
+            return `<span class="lang-seg" style="width:${pctRaw}%;background:${languageColor(name)}" title="${esc(name)} ${pctRaw.toFixed(1)}%"></span>`;
           })
           .join("");
-        document.getElementById("lang-breakdown").innerHTML = langHtml || '<span class="chip">No data</span>';
+        const langLegendHtml = langEntries
+          .map(([name, bytes]) => {
+            const pctLang = Math.round((bytes / totalLangBytes) * 100);
+            return `<span class="chip"><span class="dot" style="background:${languageColor(name)}"></span>${esc(name)} ${pctLang}%</span>`;
+          })
+          .join("");
+        document.getElementById("lang-bar").innerHTML = langBarHtml || '<span class="lang-empty">No data</span>';
+        document.getElementById("lang-breakdown").innerHTML = langLegendHtml || '<span class="chip">No data</span>';
 
         const commitHtml = commits.slice(0, 5).map((c) => {
           const msg = (c.commit && c.commit.message ? c.commit.message : "(no message)").split("\n")[0];
@@ -776,6 +837,7 @@
       } catch (err) {
         const msg = `GitHub API load failed: ${String(err.message || err)}`;
         document.getElementById("repo-meta").textContent = msg;
+        document.getElementById("lang-bar").innerHTML = '<span class="lang-empty">Unavailable</span>';
         document.getElementById("lang-breakdown").innerHTML = `<span class="chip">${esc(msg)}</span>`;
         document.getElementById("label-breakdown").innerHTML = '<span class="chip">Unavailable</span>';
         document.getElementById("commit-list").innerHTML = "<li>Unavailable</li>";
