@@ -3,184 +3,373 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project Dashboard - dpa-orphans-court</title>
+  <title>Action Plan - dpa-orphans-court</title>
   <style>
     :root {
-      --paper: #f7f3ea;
+      --bg: #f4f2ee;
       --panel: #ffffff;
-      --ink: #2d2a26;
-      --muted: #6b665f;
-      --line: #e4ddd1;
+      --panel-soft: #faf8f3;
+      --text: #2c2c2c;
+      --muted: #6f6a62;
+      --line: #e2dccf;
       --navy: #1b3a6b;
       --green: #2d5016;
       --gold: #c98d14;
-      --warm: #f5eee1;
+      --danger: #b23b3b;
+      --chip: #eef4ff;
+      --chip-line: #ccdbf5;
+      --header-grad: linear-gradient(135deg, #1b3a6b 0%, #2d5016 100%);
+      --shadow: 0 1px 6px rgba(16, 14, 10, 0.08);
     }
-    * { box-sizing: border-box; }
+
+    body[data-theme="dark"] {
+      --bg: #0f1520;
+      --panel: #121c2b;
+      --panel-soft: #0f1724;
+      --text: #e9edf3;
+      --muted: #a7b1bf;
+      --line: #243247;
+      --navy: #8fb7ff;
+      --green: #76d28f;
+      --gold: #ffd36e;
+      --danger: #ff8e8e;
+      --chip: #17263a;
+      --chip-line: #2a3e5a;
+      --header-grad: linear-gradient(135deg, #121b2c 0%, #17311f 100%);
+      --shadow: 0 1px 8px rgba(0, 0, 0, 0.38);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "Avenir Next", "Segoe UI", Tahoma, sans-serif;
-      color: var(--ink);
-      line-height: 1.5;
       background:
-        radial-gradient(1100px 500px at -8% -12%, #fff7df 0%, rgba(255, 247, 223, 0) 64%),
-        radial-gradient(900px 480px at 108% 0%, #e6f2ff 0%, rgba(230, 242, 255, 0) 66%),
-        var(--paper);
+        radial-gradient(1200px 520px at -12% -12%, rgba(255, 244, 214, 0.75) 0%, transparent 62%),
+        radial-gradient(980px 520px at 110% 0%, rgba(214, 235, 255, 0.7) 0%, transparent 66%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
     a { color: var(--navy); }
+
     .header {
-      background: linear-gradient(135deg, #1b3a6b 0%, #2d5016 100%);
+      background: var(--header-grad);
       color: #fff;
-      padding: 32px 28px 22px;
+      padding: 30px 24px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
     }
     .header-top {
       display: flex;
-      gap: 14px;
       justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.02em;
+    }
+    .header-sub {
+      margin: 5px 0 0;
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+    .header-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 0.72rem;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+    .mode-btn {
+      border: 1px solid rgba(255, 255, 255, 0.33);
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      border-radius: 999px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+    }
+    .mode-btn:hover { background: rgba(255, 255, 255, 0.23); }
+
+    .progress-section {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .progress-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      opacity: 0.8;
+      margin-bottom: 7px;
+    }
+    .progress-row {
+      display: flex;
+      gap: 12px;
       align-items: center;
       flex-wrap: wrap;
     }
-    .header h1 { margin: 0; font-size: 1.7rem; }
-    .header-sub { margin: 6px 0 0; opacity: 0.88; font-size: 0.9rem; }
-    .chip {
-      background: rgba(255, 255, 255, 0.16);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      padding: 5px 11px;
+    .progress-track {
+      flex: 1;
+      min-width: 200px;
+      height: 10px;
       border-radius: 999px;
-      font-size: 0.73rem;
-      white-space: nowrap;
-    }
-    .progress-wrap {
-      margin-top: 16px;
-      display: grid;
-      gap: 8px;
-    }
-    .progress-bar {
-      width: 100%;
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.27);
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.26);
     }
     .progress-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #7ec850 0%, #f1d061 100%);
+      transition: width 0.2s ease;
     }
+    .progress-meta {
+      font-size: 0.83rem;
+      opacity: 0.9;
+    }
+
+    .header-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+    }
+    .header-card {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 84px;
+    }
+    .header-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.87;
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.27);
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .mini-list {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 0.76rem;
+      opacity: 0.95;
+      display: grid;
+      gap: 3px;
+    }
+
     .layout {
       max-width: 1150px;
-      margin: 26px auto 56px;
-      padding: 0 22px;
+      margin: 24px auto 50px;
+      padding: 0 20px;
       display: grid;
-      gap: 20px;
+      gap: 16px;
     }
     .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
     }
     .stat {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(42, 28, 11, 0.06);
-      padding: 14px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 13px;
       text-align: center;
     }
-    .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--navy); }
-    .stat-label { font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .stat-num {
+      font-size: 1.65rem;
+      color: var(--navy);
+      font-weight: 700;
+      line-height: 1.05;
+    }
+    .stat-label {
+      margin-top: 4px;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(42, 28, 11, 0.06);
-      padding: 18px;
+      box-shadow: var(--shadow);
+      padding: 16px;
     }
-    .title {
+    .panel-title {
       margin: 0 0 12px;
-      color: #4f4a43;
-      font-size: 0.95rem;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      border-bottom: 2px solid var(--line);
-      padding-bottom: 8px;
-    }
-    .twocol {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .task-list { display: grid; gap: 8px; }
-    .task {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      padding: 12px;
-      border: 1px solid #ece6db;
-      border-radius: 8px;
-      background: #fffcf6;
-    }
-    .task input { margin-top: 3px; accent-color: #2d5016; }
-    .task.done .task-label { text-decoration: line-through; color: #8c857b; }
-    .task-label { flex: 1; font-size: 0.9rem; }
-    .task-actions {
-      display: inline-flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-left: 6px;
-    }
-    .task-actions a {
-      text-decoration: none;
-      font-size: 0.72rem;
-      border-radius: 999px;
-      padding: 3px 8px;
-      border: 1px solid #cbdcf5;
-      background: #eef4ff;
-      color: var(--navy);
-      white-space: nowrap;
-    }
-    .task-actions a[aria-disabled="true"] {
-      opacity: 0.55;
-      pointer-events: none;
-    }
-    .phase-tag {
-      font-size: 0.66rem;
+      font-size: 0.92rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      background: #eaf2ff;
-      color: var(--navy);
-      border: 1px solid #cbdcf5;
-      border-radius: 999px;
-      padding: 3px 8px;
-      white-space: nowrap;
+      color: var(--muted);
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 7px;
     }
-    .prior-grid {
+
+    .task-board {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
-    .prior {
-      background: #f8f8f3;
+    .phase-col h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: var(--green);
+    }
+    .task-list {
+      display: grid;
+      gap: 8px;
+    }
+    .task {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: flex-start;
+      background: var(--panel-soft);
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 12px;
+      padding: 10px 10px;
     }
-    .prior h3 { margin: 0 0 6px; color: var(--green); font-size: 0.95rem; }
-    .prior ul { margin: 0; padding-left: 18px; color: #4d473f; font-size: 0.84rem; }
-    .links { display: flex; gap: 10px; flex-wrap: wrap; }
-    .links a {
-      display: inline-block;
-      text-decoration: none;
-      background: #eef4ff;
-      border: 1px solid #cedcf3;
+    .task input {
+      margin-top: 2px;
+      accent-color: #2d5016;
+    }
+    .task.done .task-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .task-main { min-width: 0; }
+    .task-title {
+      font-size: 0.88rem;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+    .task-meta {
+      margin-top: 5px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-radius: 999px;
+      padding: 2px 7px;
+      white-space: nowrap;
+      border: 1px solid var(--chip-line);
+      background: var(--chip);
       color: var(--navy);
-      border-radius: 6px;
-      padding: 6px 9px;
-      font-size: 0.8rem;
     }
-    @media (max-width: 840px) {
-      .twocol { grid-template-columns: 1fr; }
+    .tag.status-open { background: #fff3cd; border-color: #eed89f; color: #7e6500; }
+    .tag.status-closed { background: #dff3df; border-color: #b8dfb8; color: #195b2b; }
+    body[data-theme="dark"] .tag.status-open { background: #3a2f16; border-color: #5c4a22; color: #f5dc8d; }
+    body[data-theme="dark"] .tag.status-closed { background: #1d3c2b; border-color: #28563b; color: #9de4ad; }
+
+    .task-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      max-width: 180px;
+    }
+    .btn-link {
+      text-decoration: none;
+      font-size: 0.68rem;
+      border-radius: 999px;
+      padding: 3px 8px;
+      border: 1px solid var(--chip-line);
+      background: var(--chip);
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 14px;
+    }
+
+    .issue-list {
+      display: grid;
+      gap: 8px;
+      max-height: 420px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .issue-item {
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px;
+      display: grid;
+      gap: 5px;
+    }
+    .issue-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+    }
+    .issue-top a {
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+    .issue-time {
+      color: var(--muted);
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+
+    .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .links a {
+      text-decoration: none;
+      font-size: 0.77rem;
+      border: 1px solid var(--chip-line);
+      border-radius: 6px;
+      background: var(--chip);
+      color: var(--navy);
+      padding: 6px 9px;
+    }
+
+    .muted { color: var(--muted); font-size: 0.78rem; }
+
+    @media (max-width: 900px) {
+      .task-board { grid-template-columns: 1fr; }
+      .split { grid-template-columns: 1fr; }
+      .task { grid-template-columns: auto 1fr; }
+      .task-links { grid-column: 1 / -1; justify-content: flex-start; max-width: none; }
     }
   </style>
 </head>
@@ -188,198 +377,331 @@
   <header class="header">
     <div class="header-top">
       <div>
-        <h1>📋 dpa-orphans-court Dashboard</h1>
-        <p class="header-sub">Brighter status board with active focus on final delivery phases.</p>
+        <h1>📋 dpa-orphans-court - Action Dashboard</h1>
+        <p class="header-sub">Brighter view + issue-backed todos + live repo telemetry</p>
       </div>
-      <span class="chip">Updated: March 8, 2026</span>
+      <div class="header-tools">
+        <span class="pill" id="updated-pill">Updated: loading...</span>
+        <button id="theme-toggle" class="mode-btn" aria-label="Toggle light and dark mode" title="Toggle theme">🌙</button>
+      </div>
     </div>
-    <div class="progress-wrap">
-      <div class="chip">🚦 Current focus: Phase 5 + Phase 6 · Source of truth: GitHub Issues</div>
-      <div class="progress-bar"><div id="overall-progress" class="progress-fill"></div></div>
-      <div id="progress-text" class="chip">0% complete</div>
+
+    <div class="progress-section">
+      <div class="progress-label">Overall Progress (GitHub Issues as source of truth)</div>
+      <div class="progress-row">
+        <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+        <div id="progress-text" class="progress-meta">0% complete</div>
+      </div>
+    </div>
+
+    <div class="header-grid">
+      <section class="header-card">
+        <h3>🧬 Language Breakdown</h3>
+        <div id="lang-breakdown" class="chip-row"><span class="chip">Loading...</span></div>
+      </section>
+      <section class="header-card">
+        <h3>🧾 Recent Commits</h3>
+        <ol id="commit-list" class="mini-list"><li>Loading...</li></ol>
+      </section>
+      <section class="header-card">
+        <h3>🏷️ Open Issue Labels</h3>
+        <div id="label-breakdown" class="chip-row"><span class="chip">Loading...</span></div>
+      </section>
     </div>
   </header>
 
   <main class="layout">
     <section class="stats">
-      <div class="stat"><div id="open-count" class="stat-num">0</div><div class="stat-label">Open Tasks</div></div>
-      <div class="stat"><div id="done-count" class="stat-num">0</div><div class="stat-label">Done Tasks</div></div>
-      <div class="stat"><div class="stat-num">2</div><div class="stat-label">Active Phases</div></div>
-      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Prior Phases Completed</div></div>
+      <div class="stat"><div id="todo-open-count" class="stat-num">0</div><div class="stat-label">Open Todos</div></div>
+      <div class="stat"><div id="todo-done-count" class="stat-num">0</div><div class="stat-label">Done Todos</div></div>
+      <div class="stat"><div id="issue-open-count" class="stat-num">0</div><div class="stat-label">Open Issues</div></div>
+      <div class="stat"><div id="bug-open-count" class="stat-num">0</div><div class="stat-label">Open Bugs</div></div>
+      <div class="stat"><div id="release-labeled-count" class="stat-num">0</div><div class="stat-label">Next Release</div></div>
     </section>
 
     <section class="panel">
-      <h2 class="title">🔧 Current Work (Last Two Phases)</h2>
-      <div class="twocol">
-        <div>
-          <h3>🧹 Phase 5: Review and Cleanup</h3>
-          <div class="task-list">
-            <div class="task" data-issue-title="Review _review.csv flags and resolve container-matching and missing-name cases">
-              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
-              <span class="task-label">Review `_review.csv` flags and resolve container-matching and missing-name cases.</span>
-              <span class="phase-tag">Phase 5</span>
-              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
-            </div>
-            <div class="task" data-issue-title="Apply deleted folder suppression and rename rules where approved">
-              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
-              <span class="task-label">Apply deleted folder suppression and rename rules where approved.</span>
-              <span class="phase-tag">Phase 5</span>
-              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
-            </div>
-            <div class="task" data-issue-title="Confirm Description column counts cover maximum children per county">
-              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
-              <span class="task-label">Confirm Description column counts cover maximum children per county.</span>
-              <span class="phase-tag">Phase 5</span>
-              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
-            </div>
-          </div>
+      <h2 class="panel-title">🎯 Todo Board (All 19 Tasks)</h2>
+      <div class="task-board">
+        <div class="phase-col">
+          <h3>🧭 Phase 1-3</h3>
+          <div id="phase-early" class="task-list"></div>
         </div>
-        <div>
-          <h3>📦 Phase 6: Handoff</h3>
-          <div class="task-list">
-            <div class="task" data-issue-title="Validate an ArchivERA import using the final output schema">
-              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
-              <span class="task-label">Validate an ArchivERA import using the final output schema.</span>
-              <span class="phase-tag">Phase 6</span>
-              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
-            </div>
-            <div class="task" data-issue-title="Deliver final CSVs plus county findings/report artifacts">
-              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
-              <span class="task-label">Deliver final CSVs plus county findings/report artifacts.</span>
-              <span class="phase-tag">Phase 6</span>
-              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
-            </div>
-          </div>
+        <div class="phase-col">
+          <h3>⚙️ Phase 4-6</h3>
+          <div id="phase-late" class="task-list"></div>
         </div>
       </div>
     </section>
 
-    <section class="panel">
-      <h2 class="title">✅ Work Completed Before Current Phases</h2>
-      <div class="prior-grid">
-        <article class="prior">
-          <h3>🧭 Phase 1: Scope & Decisions</h3>
-          <ul>
-            <li>County source inventories documented.</li>
-            <li>Deleted-folder datasets identified for QA/suppression use.</li>
-            <li>Container source questions captured by county.</li>
-          </ul>
-        </article>
-        <article class="prior">
-          <h3>🧱 Phase 2: Schema & Mapping</h3>
-          <ul>
-            <li>NCC/KC/SC field differences analyzed.</li>
-            <li>KC and SC mapping issues identified and normalized approach set.</li>
-            <li>Repeated `Description`/`Notes` export pattern confirmed.</li>
-          </ul>
-        </article>
-        <article class="prior">
-          <h3>🧪 Phase 3: Extraction QA</h3>
-          <ul>
-            <li>Table exports and row counts captured for each county.</li>
-            <li>ID consistency and sparse-field checks completed.</li>
-            <li>Leading-zero handling and outlier fields reviewed.</li>
-          </ul>
-        </article>
-        <article class="prior">
-          <h3>⚙️ Phase 4: Generate AE Outputs</h3>
-          <ul>
-            <li>Migration script supports profiles (`ncc`, `kc`, `sc`).</li>
-            <li>`single` + `columns` child output formats implemented.</li>
-            <li>Review-output workflow wired for QA pass.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
+    <section class="split">
+      <section class="panel">
+        <h2 class="panel-title">🐙 Open Issues (Live)</h2>
+        <div id="open-issues" class="issue-list"></div>
+      </section>
 
-    <section class="panel">
-      <h2 class="title">📚 Project Evidence and Links</h2>
-      <div class="links">
-        <a href="README.md">README.md</a>
-        <a href="ACTION_PLAN.md">ACTION_PLAN.md</a>
-        <a href="FINDINGS_NC.md">FINDINGS_NC.md</a>
-        <a href="FINDINGS_KC.md">FINDINGS_KC.md</a>
-        <a href="FINDINGS_SC.md">FINDINGS_SC.md</a>
-      </div>
-      <p style="margin-top: 10px; font-size: 0.84rem; color: var(--muted);">GitHub: <a href="https://github.com/dpa-snyder/dpa-orphans-court">dpa-snyder/dpa-orphans-court</a></p>
+      <section class="panel">
+        <h2 class="panel-title">📚 Project Links</h2>
+        <div class="links">
+          <a href="README.md">README.md</a>
+          <a href="ACTION_PLAN.md">ACTION_PLAN.md</a>
+          <a href="FINDINGS_NC.md">FINDINGS_NC.md</a>
+          <a href="FINDINGS_KC.md">FINDINGS_KC.md</a>
+          <a href="FINDINGS_SC.md">FINDINGS_SC.md</a>
+          <a href="TODO.md">TODO.md</a>
+        </div>
+        <p class="muted" style="margin-top: 12px;">
+          GitHub repo: <a href="https://github.com/dpa-snyder/dpa-orphans-court">dpa-snyder/dpa-orphans-court</a>
+        </p>
+        <p id="repo-meta" class="muted">Repo telemetry loading...</p>
+      </section>
     </section>
   </main>
 
   <script>
-    const owner = "dpa-snyder";
-    const repo = "dpa-orphans-court";
-    const tasks = Array.from(document.querySelectorAll(".task[data-issue-title]"));
+    const OWNER = "dpa-snyder";
+    const REPO = "dpa-orphans-court";
+
+    const TODOS = [
+      { phase: 1, title: "Confirm how to use deleted folders tables for NCC, KC, and SC (suppress, rename, or QA only)." },
+      { phase: 1, title: "Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table." },
+      { phase: 1, title: "Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`." },
+      { phase: 1, title: "Identify container list sources for KC and SC (barcode/location lookup files)." },
+      { phase: 2, title: "Define KC-specific column mapping (or a pre-rename step) to match the NCC schema." },
+      { phase: 2, title: "Decide SubGr defaults for KC and SC (likely `000`)." },
+      { phase: 2, title: "Decide how to normalize SC RG/Series/Dept_Organization/Series_Name outliers (keep vs fold into dominant values)." },
+      { phase: 2, title: "Confirm Notes column policy (two `Notes` columns) and what goes in each for all counties." },
+      { phase: 3, title: "Verify all Access tables are exported for KC and SC (Adults/Children + supplemental tables)." },
+      { phase: 3, title: "Validate leading-zero handling for RG/Series/SubGr and decide if padding should be enforced at export or in script." },
+      { phase: 3, title: "Compare extracted row counts against Access to ensure completeness." },
+      { phase: 4, title: "Run NCC exports with current script and defaults; produce both single and columns outputs." },
+      { phase: 4, title: "Implement KC mapping and generate KC outputs once decisions are finalized." },
+      { phase: 4, title: "Implement SC normalization rules and generate SC outputs." },
+      { phase: 5, title: "Review `_review.csv` flags and resolve container-matching and missing-name cases." },
+      { phase: 5, title: "Apply deleted folder suppression/rename rules where approved." },
+      { phase: 5, title: "Confirm Description column counts cover maximum children per county." },
+      { phase: 6, title: "Validate an AE import using the final output schema." },
+      { phase: 6, title: "Deliver final CSVs plus findings/report for each county." }
+    ];
+
+    function normalizeTitle(str) {
+      return (str || "")
+        .toLowerCase()
+        .replace(/[`'".!,:;()\[\]{}]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function esc(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function fmtDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    }
 
     function newIssueUrl(title) {
       const labels = "dashboard,todo";
       const body = [
-        "Created from the project dashboard.",
+        "Created from dpa-orphans-court dashboard.",
         "",
         "Todo:",
-        `- ${title}`
+        "- " + title
       ].join("\n");
-      return `https://github.com/${owner}/${repo}/issues/new?title=${encodeURIComponent(title)}&labels=${encodeURIComponent(labels)}&body=${encodeURIComponent(body)}`;
+      return `https://github.com/${OWNER}/${REPO}/issues/new?title=${encodeURIComponent(title)}&labels=${encodeURIComponent(labels)}&body=${encodeURIComponent(body)}`;
     }
 
-    function searchUrl(title) {
-      const q = `is:issue repo:${owner}/${repo} in:title "${title}"`;
-      return `https://github.com/${owner}/${repo}/issues?q=${encodeURIComponent(q)}`;
+    async function fetchJson(url) {
+      const resp = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+      if (!resp.ok) throw new Error(`${resp.status} ${url}`);
+      return resp.json();
     }
 
-    function updateTotals() {
-      const items = Array.from(document.querySelectorAll("input.todo"));
-      const done = items.filter((cb) => cb.checked).length;
-      const total = items.length;
-      const open = total - done;
-      const pct = total ? Math.round((done / total) * 100) : 0;
+    function renderTask(todo, issue) {
+      const checked = issue && issue.state === "closed";
+      const issueState = issue ? issue.state : "missing";
+      const issueHref = issue ? issue.html_url : `https://github.com/${OWNER}/${REPO}/issues?q=${encodeURIComponent(`is:issue repo:${OWNER}/${REPO} in:title "${todo.title}"`)}`;
+      const issueText = issue ? `#${issue.number} ${issue.state}` : "Find issue";
 
-      document.getElementById("open-count").textContent = open;
-      document.getElementById("done-count").textContent = done;
-      document.getElementById("overall-progress").style.width = pct + "%";
-      document.getElementById("progress-text").textContent = pct + "% complete · " + done + " of " + total + " tasks done";
+      const labels = issue && issue.labels ? issue.labels.map((l) => `<span class="tag">${esc(l.name)}</span>`).join("") : "";
+
+      return `
+        <article class="task ${checked ? "done" : ""}">
+          <input type="checkbox" disabled ${checked ? "checked" : ""} aria-label="Issue completion state" />
+          <div class="task-main">
+            <div class="task-title">${esc(todo.title)}</div>
+            <div class="task-meta">
+              <span class="tag">Phase ${todo.phase}</span>
+              <span class="tag status-${esc(issueState)}">${esc(issueState)}</span>
+              ${labels}
+            </div>
+          </div>
+          <div class="task-links">
+            <a class="btn-link" href="${issueHref}" target="_blank" rel="noopener">${issueText}</a>
+            <a class="btn-link" href="${newIssueUrl(todo.title)}" target="_blank" rel="noopener">New</a>
+          </div>
+        </article>
+      `;
     }
 
-    async function syncTask(task) {
-      const title = task.dataset.issueTitle;
-      const checkbox = task.querySelector("input.todo");
-      const issueLink = task.querySelector(".issue-link");
-      const createLink = task.querySelector(".issue-create");
+    function renderOpenIssue(issue, todoTitleSet) {
+      const tags = (issue.labels || []).map((l) => `<span class="tag">${esc(l.name)}</span>`).join("");
+      const maybeTodo = todoTitleSet.has(normalizeTitle(issue.title)) ? "<span class=\"tag\">todo</span>" : "";
+      return `
+        <article class="issue-item">
+          <div class="issue-top">
+            <a href="${issue.html_url}" target="_blank" rel="noopener">#${issue.number} ${esc(issue.title)}</a>
+            <span class="issue-time">updated ${fmtDate(issue.updated_at)}</span>
+          </div>
+          <div class="task-meta">${maybeTodo}${tags}</div>
+        </article>
+      `;
+    }
 
-      issueLink.href = searchUrl(title);
-      createLink.href = newIssueUrl(title);
+    function setTheme(theme) {
+      document.body.setAttribute("data-theme", theme);
+      localStorage.setItem("dpa-dashboard-theme", theme);
+      document.getElementById("theme-toggle").textContent = theme === "dark" ? "☀️" : "🌙";
+    }
 
-      const q = `repo:${owner}/${repo} is:issue in:title "${title}"`;
-      const api = `https://api.github.com/search/issues?q=${encodeURIComponent(q)}&per_page=1&sort=created&order=desc`;
+    function initTheme() {
+      const saved = localStorage.getItem("dpa-dashboard-theme");
+      if (saved === "light" || saved === "dark") {
+        setTheme(saved);
+        return;
+      }
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(prefersDark ? "dark" : "light");
+    }
+
+    async function main() {
+      initTheme();
+      document.getElementById("theme-toggle").addEventListener("click", () => {
+        const current = document.body.getAttribute("data-theme") || "light";
+        setTheme(current === "dark" ? "light" : "dark");
+      });
+
+      const updatedStamp = new Date().toLocaleString();
+      document.getElementById("updated-pill").textContent = `Updated: ${updatedStamp}`;
 
       try {
-        const resp = await fetch(api, { headers: { Accept: "application/vnd.github+json" } });
-        if (!resp.ok) throw new Error("search failed");
-        const data = await resp.json();
-        const issue = (data.items || [])[0];
+        const [repo, languages, commits, issues, repoLabels] = await Promise.all([
+          fetchJson(`https://api.github.com/repos/${OWNER}/${REPO}`),
+          fetchJson(`https://api.github.com/repos/${OWNER}/${REPO}/languages`),
+          fetchJson(`https://api.github.com/repos/${OWNER}/${REPO}/commits?per_page=6`),
+          fetchJson(`https://api.github.com/repos/${OWNER}/${REPO}/issues?state=all&per_page=100`),
+          fetchJson(`https://api.github.com/repos/${OWNER}/${REPO}/labels?per_page=100`)
+        ]);
 
-        if (!issue) {
-          checkbox.checked = false;
-          task.classList.remove("done");
-          issueLink.textContent = "Find issue";
-          createLink.textContent = "Create issue";
-          createLink.removeAttribute("aria-disabled");
-          return;
+        const issueOnly = issues.filter((i) => !i.pull_request);
+        const issueByTitle = new Map();
+        for (const issue of issueOnly) {
+          issueByTitle.set(normalizeTitle(issue.title), issue);
         }
 
-        checkbox.checked = issue.state === "closed";
-        task.classList.toggle("done", checkbox.checked);
-        issueLink.href = issue.html_url;
-        issueLink.textContent = `Issue #${issue.number} (${issue.state})`;
-        createLink.textContent = "New issue";
+        const todoSet = new Set(TODOS.map((t) => normalizeTitle(t.title)));
+
+        let done = 0;
+        const early = [];
+        const late = [];
+        for (const todo of TODOS) {
+          const issue = issueByTitle.get(normalizeTitle(todo.title));
+          if (issue && issue.state === "closed") done += 1;
+          const html = renderTask(todo, issue);
+          if (todo.phase <= 3) early.push(html);
+          else late.push(html);
+        }
+
+        document.getElementById("phase-early").innerHTML = early.join("");
+        document.getElementById("phase-late").innerHTML = late.join("");
+
+        const total = TODOS.length;
+        const openTodos = total - done;
+        const pct = total ? Math.round((done / total) * 100) : 0;
+
+        document.getElementById("todo-open-count").textContent = String(openTodos);
+        document.getElementById("todo-done-count").textContent = String(done);
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("progress-text").textContent = `${pct}% complete · ${done} of ${total} tasks done`;
+
+        const openIssues = issueOnly.filter((i) => i.state === "open");
+        document.getElementById("issue-open-count").textContent = String(openIssues.length);
+
+        const bugOpen = openIssues.filter((i) => (i.labels || []).some((l) => String(l.name).toLowerCase() === "bug")).length;
+        document.getElementById("bug-open-count").textContent = String(bugOpen);
+
+        const releaseOpen = openIssues.filter((i) =>
+          (i.labels || []).some((l) => {
+            const n = String(l.name).toLowerCase();
+            return n.includes("next release") || n.includes("release");
+          })
+        ).length;
+        document.getElementById("release-labeled-count").textContent = String(releaseOpen);
+
+        const openIssueHtml = openIssues
+          .sort((a, b) => Date.parse(b.updated_at) - Date.parse(a.updated_at))
+          .map((issue) => renderOpenIssue(issue, todoSet))
+          .join("");
+        document.getElementById("open-issues").innerHTML = openIssueHtml || '<p class="muted">No open issues.</p>';
+
+        const totalLangBytes = Object.values(languages).reduce((sum, n) => sum + n, 0) || 1;
+        const langHtml = Object.entries(languages)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 6)
+          .map(([name, bytes]) => {
+            const pctLang = Math.round((bytes / totalLangBytes) * 100);
+            return `<span class="chip">${esc(name)} ${pctLang}%</span>`;
+          })
+          .join("");
+        document.getElementById("lang-breakdown").innerHTML = langHtml || '<span class="chip">No data</span>';
+
+        const commitHtml = commits.slice(0, 5).map((c) => {
+          const msg = (c.commit && c.commit.message ? c.commit.message : "(no message)").split("\n")[0];
+          const sha = String(c.sha || "").slice(0, 7);
+          const date = c.commit && c.commit.author && c.commit.author.date ? fmtDate(c.commit.author.date) : "";
+          return `<li><a href="${c.html_url}" target="_blank" rel="noopener">${esc(msg)}</a> <span style="opacity:.75">(${sha} · ${date})</span></li>`;
+        }).join("");
+        document.getElementById("commit-list").innerHTML = commitHtml || "<li>No commits found.</li>";
+
+        const labelCounts = new Map();
+        for (const issue of openIssues) {
+          for (const label of issue.labels || []) {
+            const k = label.name;
+            labelCounts.set(k, (labelCounts.get(k) || 0) + 1);
+          }
+        }
+
+        const labelHtml = (repoLabels || [])
+          .map((label) => ({
+            name: String(label.name),
+            count: labelCounts.get(String(label.name)) || 0
+          }))
+          .sort((a, b) => {
+            if (b.count !== a.count) return b.count - a.count;
+            return a.name.localeCompare(b.name);
+          })
+          .slice(0, 16)
+          .map((label) => `<span class="chip">${esc(label.name)} (${label.count})</span>`)
+          .join("");
+        document.getElementById("label-breakdown").innerHTML = labelHtml || '<span class="chip">No repo labels found</span>';
+
+        document.getElementById("repo-meta").innerHTML = `Repo: <strong>${repo.full_name}</strong> · ⭐ ${repo.stargazers_count} · 🍴 ${repo.forks_count} · Default branch: <strong>${repo.default_branch}</strong>`;
       } catch (err) {
-        checkbox.checked = false;
-        task.classList.remove("done");
-        issueLink.textContent = "Find issue";
-        createLink.textContent = "Create issue";
+        const msg = `GitHub API load failed: ${String(err.message || err)}`;
+        document.getElementById("repo-meta").textContent = msg;
+        document.getElementById("lang-breakdown").innerHTML = `<span class="chip">${esc(msg)}</span>`;
+        document.getElementById("label-breakdown").innerHTML = '<span class="chip">Unavailable</span>';
+        document.getElementById("commit-list").innerHTML = "<li>Unavailable</li>";
+        document.getElementById("open-issues").innerHTML = `<p class="muted">${esc(msg)}</p>`;
       }
     }
 
-    Promise.all(tasks.map(syncTask)).finally(updateTotals);
+    main();
   </script>
 </body>
 </html>
