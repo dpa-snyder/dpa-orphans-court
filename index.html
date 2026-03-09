@@ -1,848 +1,385 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Project Dashboard - dpa-orphans-court</title>
-<style>
-  :root {
-    --bg: #0b0f14;
-    --bg-2: #0e1624;
-    --panel: #111827;
-    --panel-2: #0f172a;
-    --border: #1f2937;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --accent: #7dd3fc;
-    --accent-2: #34d399;
-    --warn: #fbbf24;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: radial-gradient(1200px 600px at 10% -10%, #162033 0%, var(--bg) 50%),
-                radial-gradient(900px 500px at 110% 10%, #0b1f2a 0%, var(--bg) 60%);
-    color: var(--text);
-    font-family: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    line-height: 1.45;
-  }
-  header {
-    padding: 28px 32px 16px;
-    border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, #0d1420 0%, rgba(13,20,32,0) 100%);
-  }
-  header h1 {
-    margin: 0 0 6px;
-    font-size: 22px;
-    letter-spacing: 0.02em;
-  }
-  header .sub { color: var(--muted); font-size: 13px; }
-  main { padding: 24px 32px 40px; }
-  .card {
-    background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-  }
-  .card h2 {
-    margin: 0 0 8px;
-    font-size: 14px;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  .top {
-    display: grid;
-    grid-template-columns: minmax(240px, 1fr) minmax(420px, 3fr);
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-  .left-stack {
-    display: grid;
-    gap: 16px;
-  }
-  .kpi { font-size: 20px; margin: 4px 0 8px; }
-  .muted { color: var(--muted); }
-  .links a {
-    display: inline-block;
-    margin: 6px 10px 0 0;
-    color: var(--text);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-  }
-  .links a:hover { border-bottom-color: var(--accent); }
-  .cmd {
-    background: #0b1220;
-    border: 1px solid #1b2638;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 12px;
-    white-space: pre-wrap;
-  }
-  .split {
-    display: grid;
-    grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
-    gap: 16px;
-    margin-top: 16px;
-  }
-  @media (max-width: 980px) {
-    .top { grid-template-columns: 1fr; }
-    .split { grid-template-columns: 1fr; }
-  }
-  details {
-    background: #0c1422;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 12px;
-  }
-  details summary {
-    cursor: pointer;
-    color: var(--accent-2);
-    font-weight: 600;
-    list-style: none;
-  }
-  details summary::-webkit-details-marker { display: none; }
-  pre {
-    background: #0b1220;
-    border: 1px solid #1b2638;
-    padding: 12px;
-    border-radius: 8px;
-    overflow: auto;
-    max-height: 420px;
-    font-size: 12px;
-  }
-  ul { padding-left: 18px; margin: 8px 0; }
-  li { margin: 6px 0; }
-  .pill {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: #111827;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 11px;
-    margin-left: 6px;
-  }
-  .todo-item { display: flex; align-items: flex-start; gap: 8px; }
-  .todo-item input[type="checkbox"] { margin-top: 2px; accent-color: #34d399; }
-  .todo-label { flex: 1; }
-  .todo-item.completed .todo-label {
-    text-decoration: line-through;
-    text-decoration-thickness: 1px;
-    color: #9aa3b2;
-  }
-  .urgent-block { border-left: 3px solid #fbbf24; padding-left: 10px; }
-  .urgent-item { color: #fde68a; }
-  .phase { margin-top: 12px; }
-  .phase-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: 600;
-    color: var(--accent-2);
-  }
-  .bars { margin-top: 6px; }
-  .bar { margin: 8px 0; }
-  .bar-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-  .bar-track { height: 8px; border-radius: 999px; background: #0b1220; border: 1px solid #1b2638; overflow: hidden; }
-  .bar-fill { height: 100%; background: linear-gradient(90deg, #34d399 0%, #7dd3fc 100%); width: 0%; }
-  .bar-num { font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .note { font-size: 11px; color: var(--muted); margin-top: 6px; }
-  .ring {
-    width: 72px; height: 72px; border-radius: 50%;
-    background: conic-gradient(#34d399 0 calc(var(--pct) * 1%), #1f2937 calc(var(--pct) * 1%) 100%);
-    display: grid; place-items: center; font-size: 11px; color: var(--muted);
-    border: 1px solid #1b2638;
-  }
-  .ring span { color: var(--text); font-weight: 600; }
-  .phase-charts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
-  }
-  .phase-chart {
-    background: #0b1220;
-    border: 1px solid #1b2638;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    display: grid;
-    gap: 6px;
-  }
-  .ring-sm {
-    width: 56px; height: 56px; border-radius: 50%;
-    background: conic-gradient(#34d399 0 calc(var(--pct) * 1%), #1f2937 calc(var(--pct) * 1%) 100%);
-    display: grid; place-items: center; font-size: 10px; color: var(--muted);
-    border: 1px solid #1b2638;
-    margin: 0 auto;
-  }
-  .ring-sm span { color: var(--text); font-weight: 600; }
-  .phase-chart-label { font-size: 11px; color: var(--muted); }
-  .phase-chart-num { font-size: 11px; color: var(--text); }
-  .filter-bar {
-    display: flex;
-    gap: 8px;
-    margin: 8px 0 12px;
-  }
-  .filter-bar input,
-  .filter-bar select {
-    background: #0b1220;
-    border: 1px solid #1b2638;
-    color: var(--text);
-    padding: 6px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    width: 100%;
-  }
-  .filter-bar select { max-width: 160px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Dashboard - dpa-orphans-court</title>
+  <style>
+    :root {
+      --paper: #f7f3ea;
+      --panel: #ffffff;
+      --ink: #2d2a26;
+      --muted: #6b665f;
+      --line: #e4ddd1;
+      --navy: #1b3a6b;
+      --green: #2d5016;
+      --gold: #c98d14;
+      --warm: #f5eee1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "Segoe UI", Tahoma, sans-serif;
+      color: var(--ink);
+      line-height: 1.5;
+      background:
+        radial-gradient(1100px 500px at -8% -12%, #fff7df 0%, rgba(255, 247, 223, 0) 64%),
+        radial-gradient(900px 480px at 108% 0%, #e6f2ff 0%, rgba(230, 242, 255, 0) 66%),
+        var(--paper);
+    }
+    a { color: var(--navy); }
+    .header {
+      background: linear-gradient(135deg, #1b3a6b 0%, #2d5016 100%);
+      color: #fff;
+      padding: 32px 28px 22px;
+    }
+    .header-top {
+      display: flex;
+      gap: 14px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .header h1 { margin: 0; font-size: 1.7rem; }
+    .header-sub { margin: 6px 0 0; opacity: 0.88; font-size: 0.9rem; }
+    .chip {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.73rem;
+      white-space: nowrap;
+    }
+    .progress-wrap {
+      margin-top: 16px;
+      display: grid;
+      gap: 8px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.24);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #7ec850 0%, #f1d061 100%);
+    }
+    .layout {
+      max-width: 1150px;
+      margin: 26px auto 56px;
+      padding: 0 22px;
+      display: grid;
+      gap: 20px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(42, 28, 11, 0.06);
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+    .stat-label { font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(42, 28, 11, 0.06);
+      padding: 18px;
+    }
+    .title {
+      margin: 0 0 12px;
+      color: #4f4a43;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 8px;
+    }
+    .twocol {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .task-list { display: grid; gap: 8px; }
+    .task {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border: 1px solid #ece6db;
+      border-radius: 8px;
+      background: #fffcf6;
+    }
+    .task input { margin-top: 3px; accent-color: #2d5016; }
+    .task.done .task-label { text-decoration: line-through; color: #8c857b; }
+    .task-label { flex: 1; font-size: 0.9rem; }
+    .task-actions {
+      display: inline-flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-left: 6px;
+    }
+    .task-actions a {
+      text-decoration: none;
+      font-size: 0.72rem;
+      border-radius: 999px;
+      padding: 3px 8px;
+      border: 1px solid #cbdcf5;
+      background: #eef4ff;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+    .task-actions a[aria-disabled="true"] {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .phase-tag {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: #eaf2ff;
+      color: var(--navy);
+      border: 1px solid #cbdcf5;
+      border-radius: 999px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+    .prior-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .prior {
+      background: #f8f8f3;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .prior h3 { margin: 0 0 6px; color: var(--green); font-size: 0.95rem; }
+    .prior ul { margin: 0; padding-left: 18px; color: #4d473f; font-size: 0.84rem; }
+    .links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .links a {
+      display: inline-block;
+      text-decoration: none;
+      background: #eef4ff;
+      border: 1px solid #cedcf3;
+      color: var(--navy);
+      border-radius: 6px;
+      padding: 6px 9px;
+      font-size: 0.8rem;
+    }
+    @media (max-width: 840px) {
+      .twocol { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <h1>Project Dashboard - dpa-orphans-court</h1>
-  <div class="sub">Generated 2026-03-07 22:20 · Local view</div>
-</header>
-<main>
-  <div class="top">
-    <div class="left-stack">
-      <div class="card">
-        <h2>Status</h2>
-        <div class="kpi">Open TODOs: <span id="kpi-open">19</span></div>
-        <div class="muted">Completed: <span id="kpi-done">0</span></div>
-        <div class="note">Checkboxes persist in this browser only.</div>
-        <div class="note"><div class="ring" style="--pct: 0"><span>0%</span></div></div>
+  <header class="header">
+    <div class="header-top">
+      <div>
+        <h1>📋 dpa-orphans-court Dashboard</h1>
+        <p class="header-sub">Brighter status board with active focus on final delivery phases.</p>
       </div>
-      <div class="card">
-        <h2>Quick Links</h2>
-        <div class="links"><a href="README.md">README.md</a><a href="FINDINGS_NC.md">FINDINGS_NC.md</a><a href="FINDINGS_KC.md">FINDINGS_KC.md</a><a href="FINDINGS_SC.md">FINDINGS_SC.md</a><a href="ACTION_PLAN.md">ACTION_PLAN.md</a><a href="index.html">index.html</a></div>
-        <div class="muted" style="margin-top: 8px;">GitHub: <a href="https://github.com/dpa-snyder/dpa-orphans-court">https://github.com/dpa-snyder/dpa-orphans-court</a></div>
-        <div class="muted">gh: logged in as snyderb-de</div>
-      </div>
+      <span class="chip">Updated: March 8, 2026</span>
     </div>
-
-    <div class="card">
-      <h2>Progress</h2>
-      <div class="bars"><div class="bar" data-phase="phase-1-scope-and-decisions"><div class="bar-label">Phase 1: Scope and Decisions</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/4 done</div></div><div class="bar" data-phase="phase-2-schema-and-mapping"><div class="bar-label">Phase 2: Schema and Mapping</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/4 done</div></div><div class="bar" data-phase="phase-3-extraction-qa"><div class="bar-label">Phase 3: Extraction QA</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/3 done</div></div><div class="bar" data-phase="phase-4-generate-ae-outputs"><div class="bar-label">Phase 4: Generate AE Outputs</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/3 done</div></div><div class="bar" data-phase="phase-5-review-and-cleanup"><div class="bar-label">Phase 5: Review and Cleanup</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/3 done</div></div><div class="bar" data-phase="phase-6-handoff"><div class="bar-label">Phase 6: Handoff</div><div class="bar-track"><div class="bar-fill" data-bar-fill></div></div><div class="bar-num" data-bar-num>0/2 done</div></div></div>
-      <div class="phase-charts">
-        
-        <div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 1: Scope and Decisions</div><div class="phase-chart-num">0/4 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 2: Schema and Mapping</div><div class="phase-chart-num">0/4 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 3: Extraction QA</div><div class="phase-chart-num">0/3 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 4: Generate AE Outputs</div><div class="phase-chart-num">0/3 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 5: Review and Cleanup</div><div class="phase-chart-num">0/3 done</div></div><div class="phase-chart"><div class="ring-sm" style="--pct: 0"><span>0%</span></div><div class="phase-chart-label">Phase 6: Handoff</div><div class="phase-chart-num">0/2 done</div></div>
-      </div>
+    <div class="progress-wrap">
+      <div class="chip">🚦 Current focus: Phase 5 + Phase 6 · Source of truth: GitHub Issues</div>
+      <div class="progress-bar"><div id="overall-progress" class="progress-fill"></div></div>
+      <div id="progress-text" class="chip">0% complete</div>
     </div>
-  </div>
+  </header>
 
-  <div class="split">
-    <section class="card">
-      <h2>Urgent</h2>
-      <div class="filter-bar">
-        <input id="todo-search" type="search" placeholder="Search todos..." />
-        <select id="todo-filter">
-          <option value="all">All</option>
-          <option value="open">Open</option>
-          <option value="done">Completed</option>
-        </select>
-      </div>
-      <div class="muted">No urgent items outside phases.</div>
-      <ul class="urgent-block" id="urgent-list"></ul>
-
-      <h2>Todos By Phase</h2>
-      <div class="phase" data-phase="phase-1-scope-and-decisions"><div class="phase-header">Phase 1: Scope and Decisions <span class="pill" data-phase-count>4/4</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="1a2fc79913ea" id="todo-1a2fc79913ea-0" ><label class="todo-label" for="todo-1a2fc79913ea-0">Confirm how to use deleted folders tables for NCC, KC, and SC (suppress, rename, or QA only).</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="b6fba9e7e7de" id="todo-b6fba9e7e7de-1" ><label class="todo-label" for="todo-b6fba9e7e7de-1">Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="a6ce0ce07b71" id="todo-a6ce0ce07b71-2" ><label class="todo-label" for="todo-a6ce0ce07b71-2">Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="5d267a71f748" id="todo-5d267a71f748-3" ><label class="todo-label" for="todo-5d267a71f748-3">Identify container list sources for KC and SC (barcode/location lookup files).</label></li></ul></div><div class="phase" data-phase="phase-2-schema-and-mapping"><div class="phase-header">Phase 2: Schema and Mapping <span class="pill" data-phase-count>4/4</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="449fe0b316b3" id="todo-449fe0b316b3-0" ><label class="todo-label" for="todo-449fe0b316b3-0">Define KC-specific column mapping (or a pre-rename step) to match the NCC schema.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="0c88a910c5f3" id="todo-0c88a910c5f3-1" ><label class="todo-label" for="todo-0c88a910c5f3-1">Decide SubGr defaults for KC and SC (likely `000`).</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="5a0b375e54e8" id="todo-5a0b375e54e8-2" ><label class="todo-label" for="todo-5a0b375e54e8-2">Decide how to normalize SC RG/Series/Dept_Organization/Series_Name outliers (keep vs fold into dominant values).</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="6d48b6f09a26" id="todo-6d48b6f09a26-3" ><label class="todo-label" for="todo-6d48b6f09a26-3">Confirm Notes column policy (two `Notes` columns) and what goes in each for all counties.</label></li></ul></div><div class="phase" data-phase="phase-3-extraction-qa"><div class="phase-header">Phase 3: Extraction QA <span class="pill" data-phase-count>3/3</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="51a0a3b29dae" id="todo-51a0a3b29dae-0" ><label class="todo-label" for="todo-51a0a3b29dae-0">Verify all Access tables are exported for KC and SC (Adults/Children + supplemental tables).</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="e0c302a4c441" id="todo-e0c302a4c441-1" ><label class="todo-label" for="todo-e0c302a4c441-1">Validate leading-zero handling for RG/Series/SubGr and decide if padding should be enforced at export or in script.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="b677692ffa32" id="todo-b677692ffa32-2" ><label class="todo-label" for="todo-b677692ffa32-2">Compare extracted row counts against Access to ensure completeness.</label></li></ul></div><div class="phase" data-phase="phase-4-generate-ae-outputs"><div class="phase-header">Phase 4: Generate AE Outputs <span class="pill" data-phase-count>3/3</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="27b2ed488338" id="todo-27b2ed488338-0" ><label class="todo-label" for="todo-27b2ed488338-0">Run NCC exports with current script and defaults; produce both `single` and `columns` outputs.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="41c2126f0299" id="todo-41c2126f0299-1" ><label class="todo-label" for="todo-41c2126f0299-1">Implement KC mapping and generate KC outputs once decisions are finalized.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="6e730211ac54" id="todo-6e730211ac54-2" ><label class="todo-label" for="todo-6e730211ac54-2">Implement SC normalization rules and generate SC outputs.</label></li></ul></div><div class="phase" data-phase="phase-5-review-and-cleanup"><div class="phase-header">Phase 5: Review and Cleanup <span class="pill" data-phase-count>3/3</span></div><ul><li class="todo-item"><input class="todo" type="checkbox" data-key="4b35df629bd8" id="todo-4b35df629bd8-0" ><label class="todo-label" for="todo-4b35df629bd8-0">Review `_review.csv` flags and resolve container-matching and missing-name cases.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="bef36b60c0e8" id="todo-bef36b60c0e8-1" ><label class="todo-label" for="todo-bef36b60c0e8-1">Apply deleted folder suppression/rename rules where approved.</label></li><li class="todo-item"><input class="todo" type="checkbox" data-key="231f81e4f274" id="todo-231f81e4f274-2" ><label class="todo-label" for="todo-231f81e4f274-2">Confirm Description column counts cover maximum children per county.</label></li></ul></div><div class="phase" data-phase="phase-6-handoff"><div class="phase-header">Phase 6: Handoff <span class="pill" data-phase-count>2/2</span></div><ul><li class="todo-item urgent-item"><input class="todo" type="checkbox" data-key="258c441ceb2d" id="todo-258c441ceb2d-0" ><label class="todo-label" for="todo-258c441ceb2d-0">⚠️ Validate an AE import using the final output schema.</label></li><li class="todo-item urgent-item"><input class="todo" type="checkbox" data-key="5142fcd834d7" id="todo-5142fcd834d7-1" ><label class="todo-label" for="todo-5142fcd834d7-1">⚠️ Deliver final CSVs plus findings/report for each county.</label></li></ul></div>
-
-      
-      
+  <main class="layout">
+    <section class="stats">
+      <div class="stat"><div id="open-count" class="stat-num">0</div><div class="stat-label">Open Tasks</div></div>
+      <div class="stat"><div id="done-count" class="stat-num">0</div><div class="stat-label">Done Tasks</div></div>
+      <div class="stat"><div class="stat-num">2</div><div class="stat-label">Active Phases</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Prior Phases Completed</div></div>
     </section>
 
-    <section class="card">
-      <h2>Action Plan</h2>
-      <pre># Action Plan
-
-## Phase 1: Scope and Decisions
-- [ ] Confirm how to use deleted folders tables for NCC, KC, and SC (suppress, rename, or QA only).
-- [ ] Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.
-- [ ] Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`.
-- [ ] Identify container list sources for KC and SC (barcode/location lookup files).
-
-## Phase 2: Schema and Mapping
-- [ ] Define KC-specific column mapping (or a pre-rename step) to match the NCC schema.
-- [ ] Decide SubGr defaults for KC and SC (likely `000`).
-- [ ] Decide how to normalize SC RG/Series/Dept_Organization/Series_Name outliers (keep vs fold into dominant values).
-- [ ] Confirm Notes column policy (two `Notes` columns) and what goes in each for all counties.
-
-## Phase 3: Extraction QA
-- [ ] Verify all Access tables are exported for KC and SC (Adults/Children + supplemental tables).
-- [ ] Validate leading-zero handling for RG/Series/SubGr and decide if padding should be enforced at export or in script.
-- [ ] Compare extracted row counts against Access to ensure completeness.
-
-## Phase 4: Generate AE Outputs
-- [ ] Run NCC exports with current script and defaults; produce both `single` and `columns` outputs.
-- [ ] Implement KC mapping and generate KC outputs once decisions are finalized.
-- [ ] Implement SC normalization rules and generate SC outputs.
-
-## Phase 5: Review and Cleanup
-- [ ] Review `_review.csv` flags and resolve container-matching and missing-name cases.
-- [ ] Apply deleted folder suppression/rename rules where approved.
-- [ ] Confirm Description column counts cover maximum children per county.
-
-## Phase 6: Handoff
-- [ ] Validate an AE import using the final output schema.
-- [ ] Deliver final CSVs plus findings/report for each county.
-</pre>
+    <section class="panel">
+      <h2 class="title">🔧 Current Work (Last Two Phases)</h2>
+      <div class="twocol">
+        <div>
+          <h3>🧹 Phase 5: Review and Cleanup</h3>
+          <div class="task-list">
+            <div class="task" data-issue-title="Review _review.csv flags and resolve container-matching and missing-name cases">
+              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
+              <span class="task-label">Review `_review.csv` flags and resolve container-matching and missing-name cases.</span>
+              <span class="phase-tag">Phase 5</span>
+              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
+            </div>
+            <div class="task" data-issue-title="Apply deleted folder suppression and rename rules where approved">
+              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
+              <span class="task-label">Apply deleted folder suppression and rename rules where approved.</span>
+              <span class="phase-tag">Phase 5</span>
+              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
+            </div>
+            <div class="task" data-issue-title="Confirm Description column counts cover maximum children per county">
+              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
+              <span class="task-label">Confirm Description column counts cover maximum children per county.</span>
+              <span class="phase-tag">Phase 5</span>
+              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3>📦 Phase 6: Handoff</h3>
+          <div class="task-list">
+            <div class="task" data-issue-title="Validate an ArchivERA import using the final output schema">
+              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
+              <span class="task-label">Validate an ArchivERA import using the final output schema.</span>
+              <span class="phase-tag">Phase 6</span>
+              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
+            </div>
+            <div class="task" data-issue-title="Deliver final CSVs plus county findings/report artifacts">
+              <input class="todo" type="checkbox" disabled aria-label="Issue completion status" />
+              <span class="task-label">Deliver final CSVs plus county findings/report artifacts.</span>
+              <span class="phase-tag">Phase 6</span>
+              <span class="task-actions"><a class="issue-link" target="_blank" rel="noopener">Find issue</a><a class="issue-create" target="_blank" rel="noopener">Create issue</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
-  </div>
 
-  <div class="section">
-    <details open>
-      <summary>README.md <span class="pill">2026-03-07 16:13</span></summary>
-      <pre># DPA Orphans Court Migration
-
-Automated migration of Delaware Public Archives Orphans Court case records from Access database exports into ArchivERA-ready import CSVs.
-
-## Overview
-
-Orphans Court records consist of adult (deceased parent) records linked to child records, each assigned to physical containers organized by alphabetical name ranges. This project provides a Python script that:
-
-1. Links parent records to child records by `Record_ID`
-2. Matches each record to the correct container (Barcode + Location ID) via alphabetical surname lookup
-3. Transforms everything into ArchivERA&#x27;s import format using repeated `Description`/`Notes` headers (no numbering)
-4. Flags edge cases (foundlings, missing data) for manual review
-
-## Quick Start
-
-```bash
-python3 migrate.py \
-  --adults &quot;NCC Adults.csv&quot; \
-  --children &quot;NCCChildren.csv&quot; \
-  --containers &quot;NCC Orphans Court Containers.csv&quot; \
-  --output &quot;output.csv&quot; \
-  --default-rg 2840 \
-  --default-series 39 \
-  --default-dept-org &quot;Orphans Court, New Castle County&quot; \
-  --default-series-name &quot;Case Files&quot; \
-  --profile ncc
-```
-
-## Requirements
-
-- Python 3.6+
-- No external dependencies (stdlib only)
-
-## Input Files
-
-| File | Description |
-|------|-------------|
-| Adults CSV | Deceased parent records from Access database |
-| Children CSV | Child records linked by `Record_ID` |
-| Containers CSV | 431 containers with Barcode/Location, organized by alphabetical name ranges |
-
-## Output
-
-- **`output.csv`** — ArchivERA-ready import file (repeated `Description`/`Notes` headers, counts vary)
-- **`output_review.csv`** — Flagged records requiring manual review
-If `--children-format both` is used, two files are written:
-- `output_children_single.csv` (children as a numbered list in one Description field)
-- `output_children_columns.csv` (one child per Description column)
-Each output gets its own `_review.csv`.
-
-Both formats emit two `Notes` columns labeled `Notes` (no numbering). The first stores oversize/size info; the second stores metadata such as Deceased/DOD/Number of sheets (for `columns`) and container lookup notes.
-For `--children-format columns`, the output uses **repeated** `Description` headers (no numbering) with as many columns as needed for the maximum number of children in the dataset (minimum 6). Deceased/DOD/Number of sheets move to the second `Notes` column for that format.
-
-## CLI Arguments
-
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `--adults` | `NCC Adults.csv` | Path to adults CSV |
-| `--children` | `NCCChildren.csv` | Path to children CSV |
-| `--containers` | `NCC Orphans Court Containers.csv` | Path to containers CSV |
-| `--no-containers` | (false) | Skip container lookup (barcode/location left blank unless present in source) |
-| `--output` | `output.csv` | Output file path |
-| `--default-rg` | (empty) | Fallback RG when source is empty (4-digit) |
-| `--default-series` | (empty) | Fallback Series when source is empty (3-digit) |
-| `--default-subgr` | (empty) | Fallback SubGr when source is empty (3-digit) |
-| `--default-dept-org` | (empty) | Fallback Dept_Organization |
-| `--default-series-name` | (empty) | Fallback Series_Name |
-| `--children-format` | `single` | Children formatting: `single`, `columns`, or `both` |
-| `--profile` | `ncc` | Column mapping profile: `ncc`, `kc`, or `sc` |
-
-If any of `--default-rg`, `--default-series`, `--default-subgr`, `--default-dept-org`, or
-`--default-series-name` are omitted, the script auto-fills missing values from the most common
-non-empty value in the Adults CSV for those fields.
-
-## Number Formatting
-
-- **RG**: 4 digits with leading zeros (e.g. `2840`, `0042`)
-- **SubGr / Series / SubSeries**: 3 digits with leading zeros (e.g. `039`, `000`)
-
-## Record Types
-
-| Type | Example | Title Source |
-|------|---------|-------------|
-| Deceased parent with children | Katie Bell (5 children) | Parent name |
-| Deceased parent, no children | George Bell | Parent name |
-| No parent, children listed | Emily Joan Agoos, Susan Julia Agoos | Children names joined with &quot;and&quot; |
-| Foundling | Sarah (no last name) | Child first name only |
-
-## Reference Files
-
-| File | Purpose |
-|------|---------|
-| `NCC Orphans Court - Edited.csv` | Gold standard — manually mapped ArchivERA import |
-| `NCC Orphans Court Combined.csv` | Intermediate combined parent-child records |
-| `NCC Orphans Court.csv` | Less cleaned-up parent-child version |
-| `CONTEXT.md` | Full project context and field mapping documentation |
-| `QUESTIONS.md` | Resolved decisions and open items |
-| `notes.md` | Original working notes (KC, NCC, SC counties) |
-
-## Counties
-
-The notes reference three counties with container counts:
-- **NCC** (New Castle County) — 431 containers (current dataset)
-- **KC** (Kent County) — 211 containers
-- **SC** (Sussex County) — 289 containers
-
-The script is designed to handle all three by adjusting input files and default CLI args per county.
-</pre>
-    </details>
-
-    <details><summary>FINDINGS_NC.md <span class="pill">2026-03-07 16:43</span></summary><pre># Findings - NC
-
-## Scope
-- Focused on NCC only (Access Adults/Children + deleted folders).
-- Exports are raw CSV dumps from Access using `mdbtools` (no transformation).
-- AE import reference files were added to clarify headers/schema (see &quot;AE import reference&quot; below).
-
-## Source files
-- access-dbs/2840 New Castle County/2840-000-039 NC Orphans Court Case Files - current.mdb (5.3 MB)
-- access-dbs/2840 New Castle County/NCC deleted folders.accdb (816.0 KB)
-- access-dbs/2840 New Castle County/work to be done1.xlsx (32.2 KB)
-
-## Tables (Access)
-- 2840-000-039 NC Orphans Court Case Files - current.mdb: Adults, Children
-- NCC deleted folders.accdb: NCC deleted folders
-
-## Extracted CSVs
-- counties/2840-new-castle/extracted/2840-000-039 NC Orphans Court Case Files - current/Adults.csv
-- counties/2840-new-castle/extracted/2840-000-039 NC Orphans Court Case Files - current/Children.csv
-- counties/2840-new-castle/extracted/NCC deleted folders/NCC deleted folders.csv
-
-## Row counts
-- Adults: 10,853
-- Children: 25,540
-- NCC deleted folders: 807
-
-## Key field stats
-- Adults with children: 9,329
-- Adults with zero children: 1,524
-- Max children for one adult: 23
-- Adults missing last name: 1,885
-- Adults missing first name: 1,889
-- Children missing last name: 67
-- Children missing first name: 7
-- Adults flagged Oversized=Yes: 1,177
-- Adults with DOD present: 2,040
-- Adults with Barcode present: 39 (~0.4%)
-- Foundling count (Comments contains &quot;foundling&quot;): 1
-
-## Children per adult distribution
-- 1 child: 3,957
-- 2-3 children: 2,894
-- 4-5 children: 1,376
-- 6+ children: 1,102
-
-## ID consistency
-- Distinct Adults.Record_ID: 10,853
-- Distinct Children.Record_ID: 9,329
-- Children records with no matching Adult: 0
-- Adults with no matching Children: 1,524
-
-## Leading zeros / sorting
-- Adults.RG is stored as numeric (Double) in Access, so leading zeros are not stored there.
-- Adults.SubGr and Adults.Series are Text fields; leading zeros are preserved in the exported CSVs.
-- Observed RG values: 2840
-- Observed SubGr values: (blank), 000
-- Observed Series values: 039
- - Constant-field check (Adults.csv):
- - RG: 1 distinct (2840), 0 missing
- - Series: 1 distinct (039), 0 missing
- - Dept_Organization: 1 distinct (&quot;Orphans Court, New Castle County&quot;), 2 missing
- - Series_Name: 1 distinct (&quot;Case Files&quot;), 1 missing
- - SubGr: 1 distinct (000), 2 missing
-
-## Sparse columns (&gt;=90% empty)
-- Adults sparse columns: Field1 (1 non-empty), Barcode (39), Container_Type (88), Suffix (246)
-- Children sparse columns: Suffix (607)
-
-## Deleted folders analysis (value/usage)
-- Rows: 807
-- folder deleted values observed: yes (802), es (1), blank (4)
-- folder now located populated: 804
-- New dates populated: 801
-- mergered populated: 800
-- Minor name change populated: 11
-- comments populated: 353
-- Adult last name populated: 437
-- Child last name populated: 654
-- Exact name match to Adults (Adult last/first): 149
-- Exact name match to Children (Child last/first): 125
-- Exact name match to Adults (folder now located): 381
-- Any exact name match (Adult/Child/Now located): 456
-- Adult name + exact begin/end year match: 20
-
-Interpretation:
-- This table looks like a curation log of folders that were deleted/merged/renamed, with a &quot;folder now located&quot; replacement label and (often) updated dates.
-- About 56.5% of entries (456/807) match an existing adult/child name or a &quot;folder now located&quot; name in the main dataset, which suggests it is useful as a QA/reference list for name corrections or merge suppression.
-- Recommendation: do not import this into AE as-is; treat it as a review/mapping list to prevent importing deleted folders and to normalize names/dates where matches exist.
-
-## Notes
-- Primary DB appears to be the &quot;current&quot; .mdb file.
-- &quot;Deleted folders&quot; .accdb is now exported and should be reviewed for suppression/mapping rules.
-- The XLSX file looks like working notes; confirm if it is still in use.
-- Container/holding list is not present in the NCC .mdb; it will need to come from a separate source.
-
-## AE import reference (headers/schema)
-Reference files are in `ae-import-reference--example-data/`:
-- CKFA Migration Template.xlsx (Sheet1): 51 columns; appears to be the full AE header list.
-- 3000-000-002 Kent County Slave Records.xlsx (Table1): 23 columns.
-- 9200-D01-000 Dashiell Papers.xlsx (Sheet1): 35 columns.
-- Naturalization Records.xlsx (Naturalization Records): 24 columns. Other sheets appear to be auxiliary (not import sheets).
-- Private Accounts Collection.xlsx (Sheet1): 29 columns. Other sheets appear to be auxiliary (not import sheets).
-
-Header pattern observations:
-- Example imports use multiple &quot;Description&quot; columns **with the same header name** (no `.1` suffix).  
-- Private Accounts uses two &quot;Notes&quot; columns both labeled &quot;Notes&quot;.
-- CKFA template uses a single &quot;Description&quot; and a single &quot;Notes&quot;.
-
-Implication for Orphans Court:
-- The NCC gold standard CSV uses numbered headers, but AE references use duplicate header names.
-- Orphans Court outputs should follow the AE examples: repeated `Description`/`Notes` headers with no numbering.
-</pre></details><details><summary>FINDINGS_KC.md <span class="pill">2026-03-07 16:43</span></summary><pre># Findings - KC
-
-## Scope
-- Focused on KC only (Access Adults/Children + deleted folders).
-- Exports are raw CSV dumps from Access using `mdbtools` (no transformation).
-
-## Source files
-- access-dbs/3840 Kent County/3840-000-006 KC Orphans Court Case Files current.mdb (6.5 MB)
-- access-dbs/3840 Kent County/KC deleted folders.accdb (1.1 MB)
-- access-dbs/3840 Kent County/Puzzle pieces.xlsx (13.5 KB)
-
-## Tables (Access)
-- 3840-000-006 KC Orphans Court Case Files current.mdb: Adults, Children, Copy of Adults
-- KC deleted folders.accdb: KC orphans deleted folders
-
-## Extracted CSVs
-- counties/3840-kent/extracted/3840-000-006 KC Orphans Court Case Files current/Adults.csv
-- counties/3840-kent/extracted/3840-000-006 KC Orphans Court Case Files current/Children.csv
-- counties/3840-kent/extracted/3840-000-006 KC Orphans Court Case Files current/Copy of Adults.csv
-- counties/3840-kent/extracted/KC deleted folders/KC orphans deleted folders.csv
-
-## Row counts
-- Adults: 6,251
-- Children: 17,135
-- Copy of Adults: 6,261
-- KC deleted folders: 722
-
-## Key field stats
-- Adults with children: 5,098
-- Adults with zero children: 1,153
-- Max children for one adult: 36
-- Adults missing last name: 264
-- Adults missing first name: 267
-- Children missing last name: 18
-- Children missing first name: 4
-- Adults flagged Oversized=Yes: 2,029
-- Adults with DOD present: 5
-- Adults with Barcode present: 143
-- Foundling count (Comments contains &quot;foundling&quot;): 0
-
-## Children per adult distribution
-- 1 child: 1,663
-- 2-3 children: 1,574
-- 4-5 children: 911
-- 6+ children: 950
-
-## ID consistency
-- Distinct Adults.Record ID: 6,251
-- Distinct Children.Record ID: 5,098
-- Children records with no matching Adult: 0
-- Adults with no matching Children: 1,153
-
-## Leading zeros / sorting
-- Record Group Number: constant `3840` (2 missing).
-- Series Number: constant `006` (1 missing), leading zeros preserved in the CSV.
-- Department Name: constant `Orphans Court, Kent County` (1 missing).
-- Series Name: constant `Case Files` (15 missing).
-- No SubGr column present in the KC Adults table - will need a default (likely `000`) for AE import.
-
-## Sparse columns (&gt;=90% empty)
-- Adults sparse columns: `Title: &quot;Jr&quot;` (171 non-empty), `Barcode` (143), `condition` (67), `DOD` (5), `Old code` (10).
-- Children sparse columns: `Jr` (168), `Comments - Child` (7), `Oversize` (0).
-
-## Copy of Adults comparison
-- Copy of Adults has 6,261 rows and 18 columns (missing `condition`, `DOD`, `Old code`, `Plot`).
-- Record IDs only in Adults: 18
-- Record IDs only in Copy of Adults: 28
-- Among shared IDs (6,233), 3,094 have at least one differing value.
-- Top differing columns: Deceased&#x27;s Middle name (1,438), Barcode (932), Comments (870), Container Type (417).
-- Recommendation: treat `Adults` as the primary table unless you want a reconciliation step.
-
-## Deleted folders analysis (value/usage)
-- Rows: 722
-- folder deleted populated: 721
-- folder now located populated: 722
-- mergered folders populated: 718
-- dates populated: 720
-- original date populated: 719
-- deceased populated: 714
-- minor name change populated: 20
-- comments populated: 138
-- Adult last/first name populated: 452/451
-- Child last/first name populated: 479/480
-- Exact name match to Adults (Adult last/first): 538
-- Exact name match to Children (Child last/first): 177
-- Adult name + exact begin/end date match: 223
-
-Interpretation:
-- This looks like a curation log of deleted/merged folders with replacement labels and revised dates.
-- High match rate to Adults suggests it is useful as a QA/suppression list rather than an import source.
-
-## Oversize barcode list (all counties)
-- Source: access-dbs/All Counties Orphans Court Oversize.mdb (table: Oversize Orphan Court Names-Kent).
-- Rows: 1,378 (barcodes populated for all rows).
-- Name matches to KC Adults (last + first): 1,145.
-- No Location ID present; usable only for Barcode field on oversize records.
-
-## Puzzle pieces (XLSX)
-- Sheet &quot;repair sheet&quot; lists potential folder matches, fixes, and rescan needs; likely internal QA notes rather than import data.
-
-## Schema/mapping differences vs NCC
-- KC column names differ from NCC (e.g., `Record ID`, `Record Group Number`, `Series Number`, `Department Name`, `Deceased&#x27;s Last name`).
-- Children table columns are shifted: `Parent&#x27;s First Name` is numeric and ` etc` matches Adults last names ~90%. Mapping was corrected accordingly.
-- For the migration script, use the KC-specific mapping (not a simple rename) to avoid swapped fields.
-
-## Notes
-- No KC container list found anywhere in the Access exports or local files. Location ID data is missing.
-- Barcode can come only from Adults (143 rows) or the oversize list (if we merge it later).
-- Output uses the parent/adult barcode when present; children inherit the parent barcode.
-</pre></details><details><summary>FINDINGS_SC.md <span class="pill">2026-03-07 16:43</span></summary><pre># Findings - SC
-
-## Scope
-- Focused on Sussex only (Access Adults/Children + deleted folders and related tables).
-- Exports are raw CSV dumps from Access using `mdbtools` (no transformation).
-
-## Source files
-- access-dbs/4840 Sussex County/4840 SC Orphans Court Records - drh.mdb (108.6 MB)
-- access-dbs/4840 Sussex County/4840 SC Orphans Court Records - drh.ldb (64 B)
-- access-dbs/4840 Sussex County/4840-002 Death Names.mdb (208.0 KB)
-- access-dbs/4840 Sussex County/Deleted orphans court folder listing.accdb (784.0 KB)
-- access-dbs/4840-000-009 check list/4840-000-009 Miscellaneous Orphans Court  Minors Files.mdb (144.0 KB)
-
-## Tables (Access)
-- 4840 SC Orphans Court Records - drh.mdb: Adults, Children, Paste Errors
-- 4840-002 Death Names.mdb: 4840-002 Death Names
-- Deleted orphans court folder listing.accdb: Sussex County Deleted
-- 4840-000-009 Miscellaneous Orphans Court  Minors Files.mdb: 4840-000-009 Miscellaneous Orphans Court  Minors Files
-
-## Extracted CSVs
-- counties/4840-sussex/extracted/4840 SC Orphans Court Records - drh/Adults.csv
-- counties/4840-sussex/extracted/4840 SC Orphans Court Records - drh/Children.csv
-- counties/4840-sussex/extracted/4840 SC Orphans Court Records - drh/Paste Errors.csv
-- counties/4840-sussex/extracted/4840-002 Death Names/4840-002 Death Names.csv
-- counties/4840-sussex/extracted/Deleted orphans court folder listing/Sussex County Deleted.csv
-- counties/4840-sussex/extracted/4840-000-009 Miscellaneous Orphans Court  Minors Files/4840-000-009 Miscellaneous Orphans Court  Minors Files.csv
-
-## Row counts
-- Adults: 7,510
-- Children: 16,909
-- Paste Errors: 1
-- Death Names: 626
-- Sussex County Deleted: 927
-- Miscellaneous Orphans Court Minors Files: 37
-
-## Key field stats
-- Adults with children: 5,205
-- Adults with zero children: 2,305
-- Max children for one adult: 20
-- Adults missing last name: 377
-- Adults missing first name: 400
-- Children missing last name: 2
-- Children missing first name: 1
-- Adults flagged Oversized=Yes: 2,486
-- Adults with DOD present: 2,361
-- Adults with Barcode present: 500
-- Foundling count (Comments contains &quot;foundling&quot;): 0
-
-## Children per adult distribution
-- 1 child: 1,623
-- 2-3 children: 1,716
-- 4-5 children: 975
-- 6+ children: 892
-
-## ID consistency
-- Distinct Adults.Record_ID: 7,510
-- Distinct Children.Record_ID: 5,206
-- Children records with no matching Adult: 1
-- Adults with no matching Children: 2,305
-
-## Leading zeros / sorting
-- Record_ID values do not appear to include leading zeros.
-- RG values are mostly `4840`, with one `4848` record.
-- SubGr values: `000` (7,419), blank (90), `009` (1).
-- Series values: `009` (7,491) with small outliers: `035` (11), `018` (2), `03` (1), `03&#x27;5` (2), `035&#x27;` (2), `oo9` (1).
-- Dept_Organization values: `Orphans Court, Sussex County` (7,507), `Orphans Court` (2), `Case Files` (1).
-- Series_Name values: `Case Files` (7,497), `Case File` (11), `Guardian Accounts` (2).
-
-Implications:
-- RG/Series/Dept_Organization/Series_Name are not perfectly constant and include apparent typos.
-- Decision: normalize these to dominant values (e.g., RG 4848 -&gt; 4840, Series typos -&gt; numeric series).
-
-## Sparse columns (&gt;=90% empty)
-- Adults sparse columns: Suffix (216 non-empty), Barcode (500), File_Num (580), Field1 (2).
-- Children sparse columns: Suffix (140), Oversized (12), Size_of_Container (4).
-- Children fields that are entirely empty: Begin_year, End_Year, Number_of_Sheets, Container_Type, Barcode, DOD, File_Num, Plot.
-
-## Deleted folders analysis (value/usage)
-- Rows: 927
-- folder deleted populated: 923
-- new folder name populated: 908
-- new dates populated: 895
-- merged populated: 907
-- comments populated: 640
-- deceased populated: 904
-- minors changed name populated: 13
-- Deceased last/first name populated: 789/787
-- Minor last/first name populated: 161/161
-- Exact name match to Adults (Deceased last/first): 370
-- Exact name match to Children (Minor last/first): 31
-- Adult name + exact begin/end date match: 131
-
-Interpretation:
-- This appears to be a curation log of deleted/merged folders with replacement labels and revised dates.
-- It likely serves as a QA/suppression list rather than an import source.
-
-## Oversize barcode list (all counties)
-- Source: access-dbs/All Counties Orphans Court Oversize.mdb (table: Oversize Orphan Court Names-Sussex).
-- Rows: 2,351 (container barcodes populated for all rows).
-- Name matches to SC Adults (last + first): 1,975.
-- No Location ID present; usable only for Barcode field on oversize records.
-
-## Paste Errors
-- One-row table that looks like an import or paste anomaly. Needs review if we want to reconcile it back into Adults/Children.
-
-## Death Names / Minors Files
-- 4840-002 Death Names and 4840-000-009 Miscellaneous Orphans Court Minors Files look like separate series with different schemas.
-- Confirm whether these are in scope for AE import or handled as separate collections.
-
-## Notes
-- No SC container list found anywhere in the Access exports or local files. Location ID data is missing.
-- Barcode can come only from Adults (500 rows) or the oversize list (if we merge it later).
-- Output uses the parent/adult barcode when present; children inherit the parent barcode.
-</pre></details>
-  </div>
-</main>
-<script>
-  const storageKey = 'project-dashboard-todos';
-  const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
-
-  function syncKey(key, checked) {
-    document.querySelectorAll('input.todo[data-key="' + key + '"]').forEach(cb => {
-      cb.checked = checked;
-    });
-  }
-
-  function updateItemStyles() {
-    document.querySelectorAll('li.todo-item').forEach(li => {
-      const cb = li.querySelector('input.todo');
-      if (cb && cb.checked) {
-        li.classList.add('completed');
-      } else {
-        li.classList.remove('completed');
-      }
-    });
-  }
-
-  function applyFilters() {
-    const filter = document.getElementById('todo-filter');
-    const search = document.getElementById('todo-search');
-    const mode = filter ? filter.value : 'all';
-    const query = search ? search.value.trim().toLowerCase() : '';
-
-    document.querySelectorAll('li.todo-item').forEach(li => {
-      const cb = li.querySelector('input.todo');
-      const label = li.querySelector('.todo-label');
-      const text = label ? label.textContent.toLowerCase() : '';
-      let visible = true;
-      if (mode === 'open' && cb && cb.checked) visible = false;
-      if (mode === 'done' && cb && !cb.checked) visible = false;
-      if (query && !text.includes(query)) visible = false;
-      li.style.display = visible ? '' : 'none';
-    });
-
-    document.querySelectorAll('.phase').forEach(phase => {
-      const anyVisible = Array.from(phase.querySelectorAll('li.todo-item')).some(li => li.style.display !== 'none');
-      phase.style.display = anyVisible ? '' : 'none';
-    });
-
-    const urgentList = document.getElementById('urgent-list');
-    if (urgentList) {
-      const anyVisible = Array.from(urgentList.querySelectorAll('li.todo-item')).some(li => li.style.display !== 'none');
-      urgentList.style.display = anyVisible ? '' : 'none';
+    <section class="panel">
+      <h2 class="title">✅ Work Completed Before Current Phases</h2>
+      <div class="prior-grid">
+        <article class="prior">
+          <h3>🧭 Phase 1: Scope & Decisions</h3>
+          <ul>
+            <li>County source inventories documented.</li>
+            <li>Deleted-folder datasets identified for QA/suppression use.</li>
+            <li>Container source questions captured by county.</li>
+          </ul>
+        </article>
+        <article class="prior">
+          <h3>🧱 Phase 2: Schema & Mapping</h3>
+          <ul>
+            <li>NCC/KC/SC field differences analyzed.</li>
+            <li>KC and SC mapping issues identified and normalized approach set.</li>
+            <li>Repeated `Description`/`Notes` export pattern confirmed.</li>
+          </ul>
+        </article>
+        <article class="prior">
+          <h3>🧪 Phase 3: Extraction QA</h3>
+          <ul>
+            <li>Table exports and row counts captured for each county.</li>
+            <li>ID consistency and sparse-field checks completed.</li>
+            <li>Leading-zero handling and outlier fields reviewed.</li>
+          </ul>
+        </article>
+        <article class="prior">
+          <h3>⚙️ Phase 4: Generate AE Outputs</h3>
+          <ul>
+            <li>Migration script supports profiles (`ncc`, `kc`, `sc`).</li>
+            <li>`single` + `columns` child output formats implemented.</li>
+            <li>Review-output workflow wired for QA pass.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="title">📚 Project Evidence and Links</h2>
+      <div class="links">
+        <a href="README.md">README.md</a>
+        <a href="ACTION_PLAN.md">ACTION_PLAN.md</a>
+        <a href="FINDINGS_NC.md">FINDINGS_NC.md</a>
+        <a href="FINDINGS_KC.md">FINDINGS_KC.md</a>
+        <a href="FINDINGS_SC.md">FINDINGS_SC.md</a>
+      </div>
+      <p style="margin-top: 10px; font-size: 0.84rem; color: var(--muted);">GitHub: <a href="https://github.com/dpa-snyder/dpa-orphans-court">dpa-snyder/dpa-orphans-court</a></p>
+    </section>
+  </main>
+
+  <script>
+    const owner = "dpa-snyder";
+    const repo = "dpa-orphans-court";
+    const tasks = Array.from(document.querySelectorAll(".task[data-issue-title]"));
+
+    function newIssueUrl(title) {
+      const labels = "dashboard,todo";
+      const body = [
+        "Created from the project dashboard.",
+        "",
+        "Todo:",
+        `- ${title}`
+      ].join("\n");
+      return `https://github.com/${owner}/${repo}/issues/new?title=${encodeURIComponent(title)}&labels=${encodeURIComponent(labels)}&body=${encodeURIComponent(body)}`;
     }
-  }
 
-  function updateCounts() {
-    const all = document.querySelectorAll('input.todo');
-    let open = 0;
-    let done = 0;
-    all.forEach(cb => cb.checked ? done++ : open++);
-    const kOpen = document.getElementById('kpi-open');
-    const kDone = document.getElementById('kpi-done');
-    if (kOpen) kOpen.textContent = open;
-    if (kDone) kDone.textContent = done;
-
-    document.querySelectorAll('[data-phase]').forEach(phase => {
-      const cbs = phase.querySelectorAll('input.todo');
-      let openCount = 0;
-      const total = cbs.length;
-      cbs.forEach(cb => { if (!cb.checked) openCount++; });
-      const pill = phase.querySelector('[data-phase-count]');
-      if (pill) pill.textContent = openCount + '/' + total;
-
-      const phaseKey = phase.getAttribute('data-phase');
-      const bar = document.querySelector('.bar[data-phase="' + phaseKey + '"]');
-      if (bar) {
-        const fill = bar.querySelector('[data-bar-fill]');
-        const num = bar.querySelector('[data-bar-num]');
-        const doneCount = total - openCount;
-        const pct = total ? Math.round((doneCount / total) * 100) : 0;
-        if (fill) fill.style.width = pct + '%';
-        if (num) num.textContent = doneCount + '/' + total + ' done';
-      }
-    });
-    updateItemStyles();
-    applyFilters();
-  }
-
-  document.querySelectorAll('input.todo').forEach(cb => {
-    const key = cb.dataset.key;
-    if (Object.prototype.hasOwnProperty.call(stored, key)) {
-      cb.checked = stored[key];
-      syncKey(key, cb.checked);
+    function searchUrl(title) {
+      const q = `is:issue repo:${owner}/${repo} in:title "${title}"`;
+      return `https://github.com/${owner}/${repo}/issues?q=${encodeURIComponent(q)}`;
     }
-    cb.addEventListener('change', () => {
-      stored[key] = cb.checked;
-      localStorage.setItem(storageKey, JSON.stringify(stored));
-      syncKey(key, cb.checked);
-      updateCounts();
-    });
-  });
 
-  const filter = document.getElementById('todo-filter');
-  const search = document.getElementById('todo-search');
-  if (filter) filter.addEventListener('change', applyFilters);
-  if (search) search.addEventListener('input', applyFilters);
+    function updateTotals() {
+      const items = Array.from(document.querySelectorAll("input.todo"));
+      const done = items.filter((cb) => cb.checked).length;
+      const total = items.length;
+      const open = total - done;
+      const pct = total ? Math.round((done / total) * 100) : 0;
 
-  updateCounts();
-</script>
+      document.getElementById("open-count").textContent = open;
+      document.getElementById("done-count").textContent = done;
+      document.getElementById("overall-progress").style.width = pct + "%";
+      document.getElementById("progress-text").textContent = pct + "% complete · " + done + " of " + total + " tasks done";
+    }
+
+    async function syncTask(task) {
+      const title = task.dataset.issueTitle;
+      const checkbox = task.querySelector("input.todo");
+      const issueLink = task.querySelector(".issue-link");
+      const createLink = task.querySelector(".issue-create");
+
+      issueLink.href = searchUrl(title);
+      createLink.href = newIssueUrl(title);
+
+      const q = `repo:${owner}/${repo} is:issue in:title "${title}"`;
+      const api = `https://api.github.com/search/issues?q=${encodeURIComponent(q)}&per_page=1&sort=created&order=desc`;
+
+      try {
+        const resp = await fetch(api, { headers: { Accept: "application/vnd.github+json" } });
+        if (!resp.ok) throw new Error("search failed");
+        const data = await resp.json();
+        const issue = (data.items || [])[0];
+
+        if (!issue) {
+          checkbox.checked = false;
+          task.classList.remove("done");
+          issueLink.textContent = "Find issue";
+          createLink.textContent = "Create issue";
+          createLink.removeAttribute("aria-disabled");
+          return;
+        }
+
+        checkbox.checked = issue.state === "closed";
+        task.classList.toggle("done", checkbox.checked);
+        issueLink.href = issue.html_url;
+        issueLink.textContent = `Issue #${issue.number} (${issue.state})`;
+        createLink.textContent = "New issue";
+      } catch (err) {
+        checkbox.checked = false;
+        task.classList.remove("done");
+        issueLink.textContent = "Find issue";
+        createLink.textContent = "Create issue";
+      }
+    }
+
+    Promise.all(tasks.map(syncTask)).finally(updateTotals);
+  </script>
 </body>
 </html>
