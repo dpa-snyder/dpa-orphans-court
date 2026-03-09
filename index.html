@@ -259,9 +259,10 @@
       border-radius: 8px;
       padding: 10px 10px;
     }
-    .task input {
-      margin-top: 2px;
-      accent-color: #2d5016;
+    .status-icon {
+      font-size: 1.05rem;
+      line-height: 1;
+      margin-top: 1px;
     }
     .task.done .task-title {
       text-decoration: line-through;
@@ -365,6 +366,38 @@
 
     .muted { color: var(--muted); font-size: 0.78rem; }
 
+    .doc-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .doc-btn {
+      border: 1px solid var(--chip-line);
+      background: var(--chip);
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      cursor: pointer;
+    }
+    .doc-btn.active {
+      background: #1b3a6b;
+      color: #fff;
+      border-color: #1b3a6b;
+    }
+    .doc-view {
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      max-height: 360px;
+      overflow: auto;
+      font-size: 0.77rem;
+      white-space: pre-wrap;
+      line-height: 1.45;
+    }
+
     @media (max-width: 900px) {
       .task-board { grid-template-columns: 1fr; }
       .split { grid-template-columns: 1fr; }
@@ -442,6 +475,8 @@
       <section class="panel">
         <h2 class="panel-title">📚 Project Links</h2>
         <div class="links">
+          <a href="https://github.com/dpa-snyder/dpa-orphans-court">GitHub Repo</a>
+          <a href="https://github.com/dpa-snyder/dpa-orphans-court/issues">GitHub Issues</a>
           <a href="README.md">README.md</a>
           <a href="ACTION_PLAN.md">ACTION_PLAN.md</a>
           <a href="FINDINGS_NC.md">FINDINGS_NC.md</a>
@@ -454,6 +489,12 @@
         </p>
         <p id="repo-meta" class="muted">Repo telemetry loading...</p>
       </section>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">📄 In-Page Docs Reader</h2>
+      <div id="doc-controls" class="doc-controls"></div>
+      <pre id="doc-view" class="doc-view">Loading README.md...</pre>
     </section>
   </main>
 
@@ -525,6 +566,7 @@
     function renderTask(todo, issue) {
       const checked = issue && issue.state === "closed";
       const issueState = issue ? issue.state : "missing";
+      const icon = checked ? "✅" : issue ? "🟨" : "❔";
       const issueHref = issue ? issue.html_url : `https://github.com/${OWNER}/${REPO}/issues?q=${encodeURIComponent(`is:issue repo:${OWNER}/${REPO} in:title "${todo.title}"`)}`;
       const issueText = issue ? `#${issue.number} ${issue.state}` : "Find issue";
 
@@ -532,7 +574,7 @@
 
       return `
         <article class="task ${checked ? "done" : ""}">
-          <input type="checkbox" disabled ${checked ? "checked" : ""} aria-label="Issue completion state" />
+          <span class="status-icon" aria-hidden="true">${icon}</span>
           <div class="task-main">
             <div class="task-title">${esc(todo.title)}</div>
             <div class="task-meta">
@@ -569,6 +611,45 @@
       document.getElementById("theme-toggle").textContent = theme === "dark" ? "☀️" : "🌙";
     }
 
+    async function initDocReader() {
+      const docs = [
+        "README.md",
+        "ACTION_PLAN.md",
+        "TODO.md",
+        "QUESTIONS.md",
+        "FINDINGS_NC.md",
+        "FINDINGS_KC.md",
+        "FINDINGS_SC.md"
+      ];
+      const controls = document.getElementById("doc-controls");
+      const view = document.getElementById("doc-view");
+
+      async function loadDoc(name) {
+        view.textContent = `Loading ${name}...`;
+        try {
+          const resp = await fetch(name, { cache: "no-store" });
+          if (!resp.ok) throw new Error(`${resp.status} ${name}`);
+          view.textContent = await resp.text();
+        } catch (err) {
+          view.textContent = `Could not load ${name}: ${String(err.message || err)}`;
+        }
+      }
+
+      controls.innerHTML = docs.map((name, idx) =>
+        `<button class="doc-btn ${idx === 0 ? "active" : ""}" data-doc="${name}">${name}</button>`
+      ).join("");
+
+      controls.querySelectorAll(".doc-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          controls.querySelectorAll(".doc-btn").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          loadDoc(btn.dataset.doc);
+        });
+      });
+
+      await loadDoc("README.md");
+    }
+
     function initTheme() {
       const saved = localStorage.getItem("dpa-dashboard-theme");
       if (saved === "light" || saved === "dark") {
@@ -581,6 +662,7 @@
 
     async function main() {
       initTheme();
+      initDocReader();
       document.getElementById("theme-toggle").addEventListener("click", () => {
         const current = document.body.getAttribute("data-theme") || "light";
         setTheme(current === "dark" ? "light" : "dark");
