@@ -730,7 +730,7 @@
       <div class="evidence-grid">
         <article class="evidence-card">
           <h3>Questions to answer</h3>
-          <p>Seven open decisions are grouped in MEETING_BRIEF.md and CLIENT_QUESTIONS.md, ordered by unblock value.</p>
+          <p>Remaining discussion items are grouped in MEETING_BRIEF.md and CLIENT_QUESTIONS.md, with settled decisions separated from active questions.</p>
         </article>
         <article class="evidence-card">
           <h3>County evidence</h3>
@@ -830,16 +830,16 @@
 
     const MEETING_ITEMS = [
       {
-        title: "KC authoritative Adults table",
-        detail: "Choose `Adults` or `Copy of Adults`; current recommendation is `Adults` unless reconciliation is approved.",
+        title: "KC Adults source",
+        detail: "Decision recorded: use `Adults` as authoritative, then add the 28 records found only in `Copy of Adults`.",
         issueTitle: "Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.",
-        note: "Meeting decision needed: KC authoritative Adults table."
+        note: "Decision recorded: use Adults as authoritative, then add the 28 records found only in Copy of Adults."
       },
       {
         title: "SC extra dataset scope",
-        detail: "Decide whether Death Names, Miscellaneous Orphans Court Minors Files, and Paste Errors are in AE import scope.",
+        detail: "Death Names direction is mostly clear; Miscellaneous Minors and Paste Errors still need client scope decisions.",
         issueTitle: "Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`.",
-        note: "Meeting decision needed: SC extra dataset scope and Paste Errors handling."
+        note: "Meeting decision needed: confirm SC Miscellaneous Minors scope, the 5 unaccounted records, and Paste Errors handling."
       },
       {
         title: "Final container list sources",
@@ -849,21 +849,21 @@
       },
       {
         title: "Oversize barcode merge",
-        detail: "Decide whether KC/SC oversize barcode lists should merge into Adults by last+first name match.",
+        detail: "Decision recorded: do not merge by name match; create separate oversize records and cross-reference barcode.",
         issueTitle: "Decide whether to merge KC/SC oversize barcode lists into Adults by last+first name match.",
-        note: "Meeting decision needed: approve or reject oversize barcode merge."
+        note: "Decision recorded: do not merge oversize rows into Adults by name match; create separate oversize records and cross-reference barcode."
       },
       {
         title: "Deleted folder rule owner",
-        detail: "Confirm who applies approved suppression/rename rules before final output.",
+        detail: "Decision recorded: ignore deleted folders for final output unless a later exception is approved.",
         issueTitle: "Apply deleted folder suppression/rename rules where approved.",
-        note: "Meeting decision needed: owner and timing for deleted folder suppression/rename rules."
+        note: "Decision recorded: ignore deleted folders for final output unless a later exception is approved."
       },
       {
         title: "KC/SC SubGr default",
-        detail: "Confirm `000` as default where source data has no SubGr.",
+        detail: "Decision recorded: keep `000` as default where source data has no SubGr.",
         issueTitle: "Decide SubGr defaults for KC and SC (likely `000`).",
-        note: "Meeting decision needed: confirm KC/SC SubGr default."
+        note: "Decision recorded: keep 000 as default where source data has no SubGr."
       },
       {
         title: "Review flags",

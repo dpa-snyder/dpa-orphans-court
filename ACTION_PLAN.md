@@ -3,22 +3,21 @@
 Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs using repeated Description/Notes headers, with county-specific mapping, QA, and final import validation.
 
 ## Meeting Focus
-- [ ] Confirm KC authoritative Adults table.
 - [ ] Confirm SC extra dataset scope and `Paste Errors.csv` handling.
 - [ ] Identify final container list sources with Location IDs for NCC, KC, and SC.
-- [ ] Decide whether oversize barcode lists should be merged into KC/SC Adults records by last+first name match.
-- [ ] Confirm who applies deleted folder suppression/rename rules before final output.
+- [ ] Confirm manual handling for review flags and missing-name/container cases.
+- [ ] Complete Bryan final-pass checks for row counts and Description column coverage.
 
 ## Phase 1: Scope and Decisions
 - [x] Treat deleted folders tables as QA/suppression/rename references, not direct AE import sources.
-- [ ] Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.
+- [x] Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.
 - [ ] Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`.
 - [ ] Identify container list sources for NCC, KC, and SC (barcode/location lookup files).
-- [ ] Decide whether to merge KC/SC oversize barcode lists into Adults by last+first name match.
+- [x] Decide whether to merge KC/SC oversize barcode lists into Adults by last+first name match.
 
 ## Phase 2: Schema and Mapping
 - [x] Define KC-specific column mapping (or a pre-rename step) to match the NCC schema.
-- [ ] Decide SubGr defaults for KC and SC (likely `000`).
+- [x] Decide SubGr defaults for KC and SC (likely `000`).
 - [x] Decide how to normalize SC RG/Series/Dept_Organization/Series_Name outliers (keep vs fold into dominant values).
 - [x] Confirm Notes column policy (two `Notes` columns) and what goes in each for all counties.
 
@@ -34,7 +33,7 @@ Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs us
 
 ## Phase 5: Review and Cleanup
 - [ ] Review `_review.csv` flags and resolve container-matching and missing-name cases.
-- [ ] Apply deleted folder suppression/rename rules where approved.
+- [x] Apply deleted folder suppression/rename rules where approved.
 - [ ] Confirm Description column counts cover maximum children per county.
 
 ## Phase 6: Handoff

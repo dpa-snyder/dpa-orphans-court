@@ -11,20 +11,22 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 
 ## Recommended Discussion Order
 
-1. [ ] **Scope decisions**
-   - KC: choose authoritative Adults table (`Adults` vs `Copy of Adults`).
-   - SC: decide whether `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors.csv` are in scope for AE import.
+1. [x] **Decisions already recorded**
+   - KC: use `Adults` as the authoritative table, then add the 28 records found only in `Copy of Adults`.
+   - KC/SC: keep SubGr default as `000` where source data has no SubGr.
+   - KC/SC: do not merge oversize barcode lists into Adults by name match; create separate oversize records and cross-reference the barcode.
+   - Deleted folders: ignore these folders for final output unless a later exception is approved.
 
-2. [ ] **Container and barcode strategy**
+2. [ ] **SC extra dataset scope**
+   - Death Names: create separate/skeleton records connected to the matching orphan record where enough identifying data overlaps; do not merge into one record because they represent separate physical things.
+   - Miscellaneous Orphans Court Minors Files: confirm whether the 7 chancery-type records are out of scope and decide what to do with the 5 unaccounted records.
+   - `Paste Errors.csv`: confirm whether the single row belongs in final output or manual exception handling.
+
+3. [ ] **Container source strategy**
    - Identify county container list sources, especially KC and SC Location ID sources.
-   - Decide whether to merge oversize barcode lists into county Adults records by last+first name match.
+   - Confirm whether NCC has a final container list outside the Access database.
 
-3. [ ] **Deleted folders policy**
-   - Confirm deleted folder tables are QA/suppression/rename references, not direct AE import sources.
-   - Decide who applies approved suppression/rename rules before final output.
-
-4. [ ] **County metadata defaults and normalization**
-   - KC and SC: confirm SubGr default of `000` where source data has no SubGr.
+4. [x] **County metadata defaults and normalization**
    - SC: confirm normalization of obvious RG/Series/Dept_Organization/Series_Name outliers to dominant values.
 
 5. [ ] **Data completeness and review flags**
@@ -37,10 +39,10 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 
 ## Client Questions
 
-1. [ ] KC: Which table should be authoritative for Adults, `Adults` or `Copy of Adults`?
-2. [ ] KC/SC: Should oversize barcode lists be merged into Adults by last+first name match?
-3. [ ] KC/SC: Where are the final container list sources with Location IDs?
-4. [ ] SC: Are `4840-002 Death Names` and `4840-000-009 Miscellaneous Orphans Court Minors Files` in scope for AE import?
+1. [ ] KC/SC: Where are the final container list sources with Location IDs?
+2. [ ] SC: Are the 7 chancery-type Miscellaneous Orphans Court Minors Files out of scope?
+3. [ ] SC: What should happen to the 5 unaccounted Miscellaneous Orphans Court Minors Files records?
+4. [ ] SC: Should Death Names become separate/skeleton records linked to matching orphan records?
 5. [ ] SC: How should the single `Paste Errors.csv` row be handled?
 6. [ ] NCC: Where should the NCC container list come from?
 7. [ ] NCC: Is `work to be done1.xlsx` still relevant?
@@ -58,7 +60,9 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 - Adults: 6,251; Children: 17,135; Copy of Adults: 6,261; Deleted folders: 722.
 - Max children for one adult: 36.
 - `Adults` vs `Copy of Adults`: 28 IDs only in copy, 18 only in Adults, and 3,094 shared IDs with at least one differing value.
+- Decision recorded: use `Adults` as authoritative, then add the 28 records found only in `Copy of Adults`.
 - Oversize barcode list has 1,378 rows; 1,145 match KC Adults by last+first name.
+- Decision recorded: do not merge oversize rows into Adults by name match; create separate oversize records and cross-reference barcode.
 - No KC container list or Location ID source found in exports.
 
 ### Sussex County
@@ -67,9 +71,12 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 - One child record has no matching Adult.
 - Metadata has apparent outliers/typos, especially Series values.
 - Oversize barcode list has 2,351 rows; 1,975 match SC Adults by last+first name.
+- Decision recorded: do not merge oversize rows into Adults by name match; create separate oversize records and cross-reference barcode.
+- Death Names direction: create separate/skeleton records linked to matching orphan records where identifiers overlap; do not merge them into the orphan record.
+- Misc minors still need client decision: 7 chancery-type records and 5 unaccounted records.
 - No SC container list or Location ID source found in exports.
 
 ## Current Issue Status
 
-- Closed: KC mapping, SC normalization, table exports, leading-zero handling, NCC output generation, deleted folders policy, Notes policy.
-- Open: KC authoritative table, SC scope, container list sources, oversize barcode merge, SubGr defaults, row count confirmation, review flags, deleted folder rule application, Description column count, AE import validation, final delivery.
+- Closed: KC authoritative table, oversize barcode handling, SubGr default, deleted folder handling.
+- Still open for meeting: SC extra dataset scope, container list sources, row count confirmation, review flags, Description column count, AE import validation, final delivery.
