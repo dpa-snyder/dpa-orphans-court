@@ -80,3 +80,35 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 
 - Closed: KC authoritative table, oversize barcode handling, SubGr default, deleted folder handling.
 - Still open for meeting: SC extra dataset scope, container list sources, row count confirmation, review flags, Description column count, AE import validation, final delivery.
+
+## Remaining Open Issues And Close Conditions
+
+### #10 - SC extra dataset scope
+- Current evidence: Death Names should not be merged into orphan records; they likely need separate/skeleton records linked where identifiers overlap.
+- Current evidence: Miscellaneous Orphans Court Minors Files has 7 chancery-type records and 5 unaccounted records that need Brittany/Lindsay direction.
+- Current evidence: `Paste Errors.csv` has one row that needs manual disposition.
+- Close when: client confirms which SC extra datasets/rows are in AE import scope and how Death Names, Misc minors, and Paste Errors should be represented.
+
+### #11 - Container list sources
+- Current evidence: no final NCC, KC, or SC Location ID source is present in the repo or Access-export findings.
+- Current note: Lindsay is sending/resending source files and they need manual review.
+- Close when: final barcode/location lookup source files are received, reviewed, and accepted for output generation.
+
+### #14 - Row count confirmation
+- Current evidence from findings: NCC Adults 10,853 / Children 25,540; KC Adults 6,251 / Children 17,135 / Copy of Adults 6,261; SC Adults 7,510 / Children 16,909 plus supplemental tables.
+- Repo limitation: raw CSV/Access source files are not committed in this checkout, so final Access re-count cannot be independently rerun from this repo alone.
+- Close when: Bryan verifies extracted row counts against Access/source files, or source files are available and a fresh count check is rerun.
+
+### #15 - Review flags
+- Current note: flagged missing-name/container-matching cases need manual disposition, not automated guessing.
+- Close when: manual decisions are recorded for `_review.csv` flags and any accepted corrections are applied or explicitly deferred.
+
+### #17 - Description column count
+- Current evidence: max children per adult are NCC 23, KC 36, and SC 20.
+- Close when: final output schema is verified to include enough repeated `Description` columns for each county, with KC's 36-child maximum as the current high-water mark.
+
+### #18 - AE import validation
+- Close when: ArchivERA accepts a test import using the final repeated `Description`/`Notes` schema, or any required schema corrections are documented and applied.
+
+### #19 - Final delivery
+- Close when: final CSVs plus county findings/report package are delivered after AE import validation is complete.

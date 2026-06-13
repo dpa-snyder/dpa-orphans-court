@@ -39,3 +39,13 @@ Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs us
 ## Phase 6: Handoff
 - [ ] Validate an AE import using the final output schema.
 - [ ] Deliver final CSVs plus findings/report for each county.
+
+## Open Issue Close Conditions
+
+- #10 SC extra dataset scope: close after client confirms Death Names, Miscellaneous Orphans Court Minors Files, and `Paste Errors.csv` handling.
+- #11 Container list sources: close after final barcode/location lookup source files are received, reviewed, and accepted.
+- #14 Row count confirmation: close after Bryan verifies Access/source row counts, or raw sources are available and a fresh count check is rerun.
+- #15 Review flags: close after manual dispositions are recorded for `_review.csv` flags and accepted corrections are applied or deferred.
+- #17 Description column count: close after final output schema covers the current max children per county: NCC 23, KC 36, SC 20.
+- #18 AE import validation: close after ArchivERA accepts a test import or required schema corrections are applied.
+- #19 Final delivery: close after final CSVs and county findings/report package are delivered.
