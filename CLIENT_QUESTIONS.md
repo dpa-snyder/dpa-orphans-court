@@ -13,6 +13,8 @@
 ## Confirmed/Mostly Settled
 
 - KC uses `Adults` as authoritative, then adds the 28 records found only in `Copy of Adults`.
+- KC `Copy of Adults` supplemental workbook has been applied: 28 records, including 2 source-barcoded records that already match their Legal Upright name ranges.
+- KC source-barcoded Adults rows are preserved: 129 oversized and 14 regular. Oversized source-barcoded rows now get same-Record_ID letter-size companion rows when the source barcode differs from the Legal Upright range barcode.
 - KC and SC oversize barcode lists should stay as separate oversize records, with barcode cross-references back to the related Adults records.
 - KC and SC should keep `000` as the SubGr default where source data has no SubGr.
 - Deleted folder records should be ignored for final output unless a later exception is approved.

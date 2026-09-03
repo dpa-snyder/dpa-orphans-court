@@ -29,6 +29,7 @@ Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs us
 ## Phase 4: Generate AE Outputs
 - [x] Run NCC exports with current script and defaults; produce both single and columns outputs.
 - [x] Implement KC mapping and generate KC outputs once decisions are finalized.
+- [x] Add the 28 KC `Copy of Adults`-only records and preserve/duplicate KC source barcodes according to the oversized-folder rule.
 - [x] Implement SC normalization rules and generate SC outputs.
 
 ## Phase 5: Review and Cleanup
@@ -43,6 +44,7 @@ Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs us
 ## Resolved Issue Notes
 
 - #11 Container list sources: source blocker resolved for all three counties; use name-range lookup and plug container barcode.
+- #20 Oversize barcode handling: do not merge oversize barcode lists by name. KC source barcodes stay on the source row; oversized source-barcoded records get a cross-referenced letter-size companion row when the Legal Upright range barcode differs.
 
 ## Open Issue Close Conditions
 

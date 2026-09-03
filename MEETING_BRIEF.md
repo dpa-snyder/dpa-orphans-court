@@ -15,6 +15,7 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
    - KC: use `Adults` as the authoritative table, then add the 28 records found only in `Copy of Adults`.
    - KC/SC: keep SubGr default as `000` where source data has no SubGr.
    - KC/SC: do not merge oversize barcode lists into Adults by name match; create separate oversize records and cross-reference the barcode.
+   - KC: source barcodes are preserved. For oversized source-barcoded records, add a letter-size companion row using the Legal Upright name-range barcode when it differs from the source barcode.
    - Deleted folders: ignore these folders for final output unless a later exception is approved.
 
 2. [ ] **SC extra dataset scope**
@@ -62,6 +63,9 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 - Max children for one adult: 36.
 - `Adults` vs `Copy of Adults`: 28 IDs only in copy, 18 only in Adults, and 3,094 shared IDs with at least one differing value.
 - Decision recorded: use `Adults` as authoritative, then add the 28 records found only in `Copy of Adults`.
+- September 3 workbook update: `KC Copy of Adults Missing from Adults.xlsx` supplies the 28 copy-only records. Two of those 28 have source barcodes, and both already match their Legal Upright name range.
+- Zip-original output evidence: 143 KC Adults rows already had source barcodes; 129 are marked oversized and 14 are not.
+- Output rule: keep every source barcode. For the 129 oversized source-barcoded rows, add a same-Record_ID letter-size companion row when the Legal Upright range barcode differs from the source barcode; 128 companion rows are added and 3 source barcodes already match the range.
 - Oversize barcode list has 1,378 rows; 1,145 match KC Adults by last+first name.
 - Decision recorded: do not merge oversize rows into Adults by name match; create separate oversize records and cross-reference barcode.
 - No KC container list or Location ID source found in exports.

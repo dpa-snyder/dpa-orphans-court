@@ -68,6 +68,8 @@
 - Among shared IDs (6,233), 3,094 have at least one differing value.
 - Top differing columns: Deceased's Middle name (1,438), Barcode (932), Comments (870), Container Type (417).
 - Recommendation: treat `Adults` as the primary table unless you want a reconciliation step.
+- September 3 supplemental workbook `KC Copy of Adults Missing from Adults.xlsx` contains the 28 copy-only records. The post-processing output adds them to KC.
+- Two supplemental rows have source barcodes (`408312`, `408319`); both already match the Legal Upright name-range container barcode.
 
 ## Deleted folders analysis (value/usage)
 - Rows: 722
@@ -104,6 +106,6 @@ Interpretation:
 - For the migration script, use the KC-specific mapping (not a simple rename) to avoid swapped fields.
 
 ## Notes
-- No KC container list found anywhere in the Access exports or local files. Location ID data is missing.
-- Barcode can come only from Adults (143 rows) or the oversize list (if we merge it later).
-- Output uses the parent/adult barcode when present; children inherit the parent barcode.
+- KC container list is now available as a separate delivered source with Barcode and Location ID values.
+- Output preserves every Adults/source barcode. Zip-original evidence has 143 source-barcoded KC Adults rows: 129 oversized and 14 regular.
+- For oversized source-barcoded KC rows, the output keeps the source barcode row and adds a same-Record_ID letter-size companion row when the Legal Upright range barcode differs. Current KC output adds 128 companion rows and flags 3 source barcodes that already match the range.
