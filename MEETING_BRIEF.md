@@ -18,13 +18,14 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
    - Deleted folders: ignore these folders for final output unless a later exception is approved.
 
 2. [ ] **SC extra dataset scope**
-   - Death Names: create separate/skeleton records connected to the matching orphan record where enough identifying data overlaps; do not merge into one record because they represent separate physical things.
+   - Death Names: import like any other AE import; container data is already in AE export/report and should use the same name-range lookup treatment.
    - Miscellaneous Orphans Court Minors Files: confirm whether the 7 chancery-type records are out of scope and decide what to do with the 5 unaccounted records.
+   - Clarify which extra dataset is covered by the note: "Nothing to be done, ignore this data set."
    - `Paste Errors.csv`: confirm whether the single row belongs in final output or manual exception handling.
 
-3. [ ] **Container source strategy**
-   - Identify county container list sources, especially KC and SC Location ID sources.
-   - Confirm whether NCC has a final container list outside the Access database.
+3. [x] **Container source strategy**
+   - Source blocker is resolved for all three counties.
+   - Find items by name range and plug the container barcode.
 
 4. [x] **County metadata defaults and normalization**
    - SC: confirm normalization of obvious RG/Series/Dept_Organization/Series_Name outliers to dominant values.
@@ -39,12 +40,12 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 
 ## Client Questions
 
-1. [ ] KC/SC: Where are the final container list sources with Location IDs?
+1. [ ] SC: Which extra dataset is covered by "Nothing to be done, ignore this data set"?
 2. [ ] SC: Are the 7 chancery-type Miscellaneous Orphans Court Minors Files out of scope?
 3. [ ] SC: What should happen to the 5 unaccounted Miscellaneous Orphans Court Minors Files records?
-4. [ ] SC: Should Death Names become separate/skeleton records linked to matching orphan records?
-5. [ ] SC: How should the single `Paste Errors.csv` row be handled?
-6. [ ] NCC: Where should the NCC container list come from?
+4. [ ] SC: How should the single `Paste Errors.csv` row be handled?
+5. [ ] Row counts: should counts be compared to CSV counts, or should Lindsay exclude review rows first?
+6. [ ] NCC: What manual review decisions remain after processing?
 7. [ ] NCC: Is `work to be done1.xlsx` still relevant?
 
 ## Evidence By County
@@ -64,6 +65,7 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 - Oversize barcode list has 1,378 rows; 1,145 match KC Adults by last+first name.
 - Decision recorded: do not merge oversize rows into Adults by name match; create separate oversize records and cross-reference barcode.
 - No KC container list or Location ID source found in exports.
+- September 3 update: container source blocker is resolved; use name ranges and plug container barcode.
 
 ### Sussex County
 - Adults: 7,510; Children: 16,909; Paste Errors: 1; Death Names: 626; Deleted folders: 927; Misc minors: 37.
@@ -72,36 +74,42 @@ Purpose: walk through the remaining decisions in the order they unblock migratio
 - Metadata has apparent outliers/typos, especially Series values.
 - Oversize barcode list has 2,351 rows; 1,975 match SC Adults by last+first name.
 - Decision recorded: do not merge oversize rows into Adults by name match; create separate oversize records and cross-reference barcode.
-- Death Names direction: create separate/skeleton records linked to matching orphan records where identifiers overlap; do not merge them into the orphan record.
+- Death Names direction: import like any other AE import; file/item info is in the SC Death Names MDB and container data comes from the AE export/report.
 - Misc minors still need client decision: 7 chancery-type records and 5 unaccounted records.
 - No SC container list or Location ID source found in exports.
+- September 3 update: container source blocker is resolved; use name ranges and plug container barcode.
 
 ## Current Issue Status
 
-- Closed: KC authoritative table, oversize barcode handling, SubGr default, deleted folder handling.
-- Still open for meeting: SC extra dataset scope, container list sources, row count confirmation, review flags, Description column count, AE import validation, final delivery.
+- Closed: KC authoritative table, oversize barcode handling, SubGr default, deleted folder handling, container source identification.
+- Still open for meeting: SC extra dataset scope, row count confirmation, review flags, Description column count, AE import validation, final delivery.
+
+## Recently Resolved Issue Notes
+
+### #11 - Container list sources
+- Status: resolved September 3.
+- Current note: source blocker is done for all three counties.
+- Treatment: find item by name range and plug container barcode.
 
 ## Remaining Open Issues And Close Conditions
 
 ### #10 - SC extra dataset scope
-- Current evidence: Death Names should not be merged into orphan records; they likely need separate/skeleton records linked where identifiers overlap.
+- Current evidence: Death Names should be imported like any other AE import; container data is already in AE export/report and should use name-range lookup.
 - Current evidence: Miscellaneous Orphans Court Minors Files has 7 chancery-type records and 5 unaccounted records that need Brittany/Lindsay direction.
 - Current evidence: `Paste Errors.csv` has one row that needs manual disposition.
-- Close when: client confirms which SC extra datasets/rows are in AE import scope and how Death Names, Misc minors, and Paste Errors should be represented.
-
-### #11 - Container list sources
-- Current evidence: no final NCC, KC, or SC Location ID source is present in the repo or Access-export findings.
-- Current note: Lindsay is sending/resending source files and they need manual review.
-- Close when: final barcode/location lookup source files are received, reviewed, and accepted for output generation.
+- Open question: which extra dataset is covered by "Nothing to be done, ignore this data set"?
+- Close when: client confirms which SC extra datasets/rows are ignored or imported, and how Misc minors/Paste Errors should be represented.
 
 ### #14 - Row count confirmation
 - Current evidence from findings: NCC Adults 10,853 / Children 25,540; KC Adults 6,251 / Children 17,135 / Copy of Adults 6,261; SC Adults 7,510 / Children 16,909 plus supplemental tables.
-- Repo limitation: raw CSV/Access source files are not committed in this checkout, so final Access re-count cannot be independently rerun from this repo alone.
-- Close when: Bryan verifies extracted row counts against Access/source files, or source files are available and a fresh count check is rerun.
+- Current note: counts may be skewed by review rows, e.g. NCC 329.
+- Close when: CSV counts are accepted as comparison target, or Lindsay confirms excluded review rows before final comparison.
 
 ### #15 - Review flags
-- Current note: flagged missing-name/container-matching cases need manual disposition, not automated guessing.
-- Close when: manual decisions are recorded for `_review.csv` flags and any accepted corrections are applied or explicitly deferred.
+- Current note: KC and SC are clear enough to process.
+- Current note: NCC has review work because it was processed already.
+- Next step: process KC and SC to create review files for Lindsay.
+- Close when: KC/SC review files exist and NCC manual review dispositions are recorded.
 
 ### #17 - Description column count
 - Current evidence: max children per adult are NCC 23, KC 36, and SC 20.

@@ -4,7 +4,7 @@ Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs us
 
 ## Meeting Focus
 - [ ] Confirm SC extra dataset scope and `Paste Errors.csv` handling.
-- [ ] Identify final container list sources with Location IDs for NCC, KC, and SC.
+- [x] Identify final container list sources with Location IDs for NCC, KC, and SC.
 - [ ] Confirm manual handling for review flags and missing-name/container cases.
 - [ ] Complete Bryan final-pass checks for row counts and Description column coverage.
 
@@ -12,7 +12,7 @@ Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs us
 - [x] Treat deleted folders tables as QA/suppression/rename references, not direct AE import sources.
 - [x] Decide whether KC should use `Adults` or `Copy of Adults` as the authoritative table.
 - [ ] Confirm scope for SC extra datasets: `4840-002 Death Names`, `4840-000-009 Miscellaneous Orphans Court Minors Files`, and `Paste Errors`.
-- [ ] Identify container list sources for NCC, KC, and SC (barcode/location lookup files).
+- [x] Identify container list sources for NCC, KC, and SC (barcode/location lookup files).
 - [x] Decide whether to merge KC/SC oversize barcode lists into Adults by last+first name match.
 
 ## Phase 2: Schema and Mapping
@@ -40,12 +40,15 @@ Summary: Migrate NCC, KC, and SC Orphans Court data into ArchivERA-ready CSVs us
 - [ ] Validate an AE import using the final output schema.
 - [ ] Deliver final CSVs plus findings/report for each county.
 
+## Resolved Issue Notes
+
+- #11 Container list sources: source blocker resolved for all three counties; use name-range lookup and plug container barcode.
+
 ## Open Issue Close Conditions
 
-- #10 SC extra dataset scope: close after client confirms Death Names, Miscellaneous Orphans Court Minors Files, and `Paste Errors.csv` handling.
-- #11 Container list sources: close after final barcode/location lookup source files are received, reviewed, and accepted.
-- #14 Row count confirmation: close after Bryan verifies Access/source row counts, or raw sources are available and a fresh count check is rerun.
-- #15 Review flags: close after manual dispositions are recorded for `_review.csv` flags and accepted corrections are applied or deferred.
+- #10 SC extra dataset scope: Death Names now in scope as a normal AE import using name-range container lookup; close after client confirms which extra dataset should be ignored and how Miscellaneous Minors/Paste Errors are handled.
+- #14 Row count confirmation: counts may be skewed by review rows, e.g. NCC 329; close after CSV counts are accepted or Lindsay confirms excluded review rows.
+- #15 Review flags: KC and SC clear enough to process; NCC still needs manual review. Close after KC/SC review files are generated and NCC review dispositions are recorded.
 - #17 Description column count: close after final output schema covers the current max children per county: NCC 23, KC 36, SC 20.
 - #18 AE import validation: close after ArchivERA accepts a test import or required schema corrections are applied.
 - #19 Final delivery: close after final CSVs and county findings/report package are delivered.
