@@ -51,6 +51,7 @@ Each output gets its own `_review.csv`.
 
 Both formats emit two `Notes` columns labeled `Notes` (no numbering). The first stores oversize/size info; the second stores metadata such as Deceased/DOD/Number of sheets (for `columns`) and container lookup notes.
 For `--children-format columns`, the output uses **repeated** `Description` headers (no numbering) with as many columns as needed for the maximum number of children in the dataset (minimum 6). Deceased/DOD/Number of sheets move to the second `Notes` column for that format.
+Source-only fields that do not have dedicated AE columns are preserved in `Notes`, including adult comments/suffix/condition/file number/plot and child parent/comment details for blank Adult rows.
 
 For the delivered KC/SC folder outputs, run `scripts/prepare_kc_sc_outputs.py` after the base exports are present. It fills KC/SC Barcode and Location ID values from the delivered container lists, adds the 28 KC `Copy of Adults`-only records, preserves source barcodes, and adds KC letter-size companion rows for oversized source-barcoded records when the Legal Upright range barcode differs.
 

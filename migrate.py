@@ -44,6 +44,9 @@ ADULT_COLUMNS_NCC = {
     "container_type": "Container_Type",
     "size_of_container": "size_of_container",
     "barcode": "Barcode",
+    "condition": "",
+    "file_num": "",
+    "plot": "",
 }
 
 CHILD_COLUMNS_NCC = {
@@ -79,6 +82,9 @@ ADULT_COLUMNS_KC = {
     "container_type": "Container Type",
     "size_of_container": "",
     "barcode": "Barcode",
+    "condition": "condition",
+    "file_num": "",
+    "plot": "Plot",
 }
 
 CHILD_COLUMNS_KC = {
@@ -91,7 +97,7 @@ CHILD_COLUMNS_KC = {
     "parent_last": " etc",
     "parent_first": "Parent's Last Name",
     "child_record_id": "Parent's First Name",
-    "comments": "Children's Record ID",
+    "comments": "Comments - Child",
 }
 
 ADULT_COLUMNS_SC = {
@@ -115,6 +121,9 @@ ADULT_COLUMNS_SC = {
     "container_type": "Container_Type",
     "size_of_container": "Size_of_Container",
     "barcode": "Barcode",
+    "condition": "",
+    "file_num": "File_Num",
+    "plot": "Plot",
 }
 
 CHILD_COLUMNS_SC = {
@@ -275,7 +284,7 @@ def format_middle(middle):
     return middle
 
 
-def format_person_name(first, middle, last):
+def format_person_name(first, middle, last, suffix=""):
     """Build 'First Middle Last' with proper middle formatting."""
     parts = []
     if first:
@@ -285,6 +294,8 @@ def format_person_name(first, middle, last):
         parts.append(mid)
     if last:
         parts.append(last.strip())
+    if suffix:
+        parts.append(suffix.strip())
     return " ".join(parts)
 
 
@@ -297,13 +308,7 @@ def format_child_line(child, index):
     child_id = clean_float_str(child.get("child_record_id", ""))
     comments = (child.get("comments", "") or "").strip()
 
-    name = format_person_name(first, middle, last)
-    if suffix:
-        suffix = suffix.strip()
-        if name:
-            name = f"{name} {suffix}"
-        else:
-            name = suffix
+    name = format_person_name(first, middle, last, suffix)
 
     base = f"{index}."
     if name:
@@ -435,6 +440,8 @@ def load_children(children_path):
                 "first_name": get(row, CHILD_COLUMNS, "first_name"),
                 "middle_name": get(row, CHILD_COLUMNS, "middle_name"),
                 "suffix": get(row, CHILD_COLUMNS, "suffix"),
+                "parent_last": get(row, CHILD_COLUMNS, "parent_last"),
+                "parent_first": get(row, CHILD_COLUMNS, "parent_first"),
                 "child_record_id": get(row, CHILD_COLUMNS, "child_record_id"),
                 "comments": get(row, CHILD_COLUMNS, "comments"),
             }
@@ -457,11 +464,12 @@ def build_title(adult_row, children_list):
     last = get(adult_row, ADULT_COLUMNS, "last_name")
     first = get(adult_row, ADULT_COLUMNS, "first_name")
     middle = get(adult_row, ADULT_COLUMNS, "middle_name")
+    suffix = get(adult_row, ADULT_COLUMNS, "suffix")
     deceased = get(adult_row, ADULT_COLUMNS, "deceased")
 
     # Case 1: Deceased parent with a name
     if deceased.lower() == "yes" and (last or first):
-        return format_person_name(first, middle, last)
+        return format_person_name(first, middle, last, suffix)
 
     # Case 2 & 3: No deceased parent — use children names
     if children_list:
@@ -471,6 +479,7 @@ def build_title(adult_row, children_list):
                 child["first_name"],
                 child["middle_name"],
                 child["last_name"],
+                child.get("suffix", ""),
             )
             if name:
                 names.append(name)
@@ -478,7 +487,79 @@ def build_title(adult_row, children_list):
             return " and ".join(names)
 
     # Fallback
-    return format_person_name(first, middle, last)
+    return format_person_name(first, middle, last, suffix)
+
+
+def adult_name_is_blank(adult_row):
+    """True when the Adult row has no parent/deceased name fields."""
+    return not any(
+        get(adult_row, ADULT_COLUMNS, key)
+        for key in ("last_name", "first_name", "middle_name")
+    )
+
+
+def join_note_parts(parts):
+    return " | ".join(part for part in parts if part)
+
+
+def build_child_source_detail(child):
+    """Preserve child-table context that is not always visible in the title."""
+    name = format_person_name(
+        child.get("first_name", ""),
+        child.get("middle_name", ""),
+        child.get("last_name", ""),
+        child.get("suffix", ""),
+    )
+    parent = format_person_name(
+        child.get("parent_first", ""),
+        "",
+        child.get("parent_last", ""),
+    )
+    child_id = clean_float_str(child.get("child_record_id", ""))
+    comments = (child.get("comments") or "").strip()
+
+    parts = []
+    if name:
+        parts.append(name)
+    if parent:
+        parts.append(f"Parent: {parent}")
+    if child_id:
+        parts.append(f"Child ID: {child_id}")
+    if comments:
+        parts.append(f"Child comment: {comments}")
+    return " - ".join(parts)
+
+
+def build_source_note(adult_row, children_list):
+    """Preserve source fields that do not have dedicated AE columns."""
+    note_parts = []
+    adult_comments = get(adult_row, ADULT_COLUMNS, "comments")
+    adult_suffix = get(adult_row, ADULT_COLUMNS, "suffix")
+    source_container_type = get(adult_row, ADULT_COLUMNS, "container_type")
+    condition = get(adult_row, ADULT_COLUMNS, "condition")
+    file_num = get(adult_row, ADULT_COLUMNS, "file_num")
+    plot = get(adult_row, ADULT_COLUMNS, "plot")
+
+    if adult_suffix:
+        note_parts.append(f"Source suffix/title: {adult_suffix}")
+    if adult_comments and not is_foundling(adult_row):
+        note_parts.append(f"Adult comments: {adult_comments}")
+    if source_container_type:
+        note_parts.append(f"Source container type: {source_container_type}")
+    if condition:
+        note_parts.append(f"Condition: {condition}")
+    if file_num:
+        note_parts.append(f"File number: {file_num}")
+    if plot:
+        note_parts.append(f"Plot: {plot}")
+
+    if adult_name_is_blank(adult_row) and children_list:
+        details = [build_child_source_detail(child) for child in children_list]
+        details = [detail for detail in details if detail]
+        if details:
+            note_parts.append("Child source details: " + "\n".join(details))
+
+    return join_note_parts(note_parts)
 
 
 def build_description_fields(adult_row, children_list, children_format, description_count=6):
@@ -672,6 +753,12 @@ def build_record(adult_row, children_list, container_lookup, defaults=None, chil
             notes_extra = container_note
 
     notes_values = [notes_primary, notes_extra]
+    source_note = build_source_note(adult_row, children_list)
+    if source_note:
+        if notes_values[1]:
+            notes_values[1] = f"{notes_values[1]} | {source_note}"
+        else:
+            notes_values[1] = source_note
 
     # Build output row
     output = {
@@ -686,7 +773,7 @@ def build_record(adult_row, children_list, container_lookup, defaults=None, chil
         "FullDate": full_date,
         "Record_ID": rid,
         "Material Types": "Document",
-        "Container Type": "",
+        "Container Type": get(adult_row, ADULT_COLUMNS, "container_type"),
         "Deceaseds_ Last_name": last_name,
         "Barcode": barcode or "",
         "Location ID": location or "",
